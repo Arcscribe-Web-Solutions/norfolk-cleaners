@@ -1,0 +1,16 @@
+Default Business Owner: Designed for co-owners or business partners. They have full access to operations, finances, settings, and staff management, but cannot manage the overarching account subscription.
+
+Finance: Can access all jobs, quotes, invoices, clients, job history, and profitability/costing data. They do not have access to system settings or reporting.
+
+Staff: The standard employee tier. They can see all jobs, clients, schedules, and sale pricing. They can quote, invoice, and add/create items. They cannot see job profitability, reporting, or admin settings.
++2
+
+Staff (No Material Creation): Same as standard Staff, but they cannot create brand new items or services in the system; they can only apply existing ones to a job.
+
+Staff (No Pricing): Can see jobs and schedules but cannot see any quotes, invoices, sale pricing, or financial PDFs.
+
+Staff (No Pricing, No Attachments): The most restricted internal staff tier. Same as above, but they are also blocked from viewing any job diary attachments.
+
+Contractor: Designed for external outsourced workers. They can only see jobs and clients scheduled directly to them. They can quote and invoice for their specific work, but cannot create new jobs, view the general client list, or see other staff members.
+
+Strict Contractor: The most locked-down role. They can only see their own assigned jobs and schedules. They cannot quote, invoice, see pricing, add items to a job, or view other staff.

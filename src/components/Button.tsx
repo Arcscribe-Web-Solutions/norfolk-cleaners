@@ -12,11 +12,11 @@ interface ButtonProps {
 
 const variants = {
   primary:
-    "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200",
+    "bg-cyan-600 text-white hover:bg-cyan-700",
   secondary:
-    "bg-zinc-100 text-zinc-900 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700",
+    "bg-slate-100 text-slate-700 hover:bg-slate-200",
   outline:
-    "border border-zinc-300 text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800",
+    "border border-slate-300 text-slate-600 hover:bg-slate-50 hover:border-cyan-300",
 };
 
 const sizes = {
@@ -34,7 +34,7 @@ export default function Button({
   external = false,
   onClick,
 }: ButtonProps) {
-  const classes = `inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 dark:focus-visible:outline-zinc-100 ${variants[variant]} ${sizes[size]} ${className}`;
+  const classes = `inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 ${variants[variant]} ${sizes[size]} ${className}`;
 
   if (href && external) {
     return (

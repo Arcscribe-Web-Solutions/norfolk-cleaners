@@ -1,10 +1,17 @@
-/**
- * PostgreSQL Database Client
- * --------------------------
- * Optional — disabled by default. Set ENABLE_DATABASE=true to activate.
+﻿/**
+ * PostgreSQL Database Client - Supabase (Coolify-hosted)
+ * --------------------------------------------------------
+ * Optional - disabled by default. Set ENABLE_DATABASE=true to activate.
  *
- * Uses the `pg` library with a singleton pool pattern to avoid
- * opening too many connections during development hot-reloads.
+ * Connects to a Coolify-hosted Supabase PostgreSQL instance using a
+ * DATABASE_URL connection string (the direct Postgres connection, NOT
+ * the Supabase REST/PostgREST URL).
+ *
+ * Connection string format (from Coolify Supabase service):
+ *   postgresql://postgres:<password>@<host>:5432/postgres
+ *
+ * Uses the `pg` library with a singleton pool pattern to avoid opening
+ * too many connections during Next.js development hot-reloads.
  */
 
 import { Pool, type PoolConfig } from "pg";
@@ -15,16 +22,23 @@ const globalForPg = globalThis as unknown as { __pgPool?: Pool };
 function createPool(): Pool {
   requireFeature("database");
 
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error(
+      "DATABASE_URL is not set. Add your Coolify Supabase PostgreSQL connection string to .env.local.\n" +
+      "Format: postgresql://postgres:<password>@<host>:5432/postgres"
+    );
+  }
+
+  console.log("Creating database pool with connection string:", connectionString.replace(/:[^:@]+@/, ':****@'));
+
   const config: PoolConfig = {
-    host: process.env.DATABASE_HOST ?? "localhost",
-    port: Number(process.env.DATABASE_PORT ?? 5432),
-    database: process.env.DATABASE_NAME ?? "clientdb",
-    user: process.env.DATABASE_USER ?? "postgres",
-    password: process.env.DATABASE_PASSWORD ?? "",
+    connectionString,
     max: 10,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 5_000,
-    ssl: process.env.DATABASE_SSL === "true" ? { rejectUnauthorized: false } : false,
+    ssl: false, // Disable SSL for Coolify private network
   };
 
   return new Pool(config);
@@ -42,7 +56,7 @@ export function getPool(): Pool {
 }
 
 /**
- * Convenience helper — runs a parameterised query and returns rows.
+ * Convenience helper - runs a parameterised query and returns rows.
  *
  * @example
  * ```ts
@@ -63,10 +77,13 @@ export async function query<T = Record<string, unknown>>(
  */
 export async function testConnection(): Promise<boolean> {
   try {
+    console.log("Testing database connection...");
     const pool = getPool();
     await pool.query("SELECT 1");
+    console.log("Database connection test successful");
     return true;
-  } catch {
+  } catch (error) {
+    console.error("Database connection test failed:", error);
     return false;
   }
 }

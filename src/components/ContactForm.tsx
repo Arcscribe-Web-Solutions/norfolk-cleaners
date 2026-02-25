@@ -50,7 +50,7 @@ export default function ContactForm() {
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            className="block text-sm font-medium text-slate-700"
           >
             Name
           </label>
@@ -59,14 +59,14 @@ export default function ContactForm() {
             id="name"
             name="name"
             required
-            className="mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 shadow-sm placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"
+            className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
             placeholder="Your name"
           />
         </div>
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            className="block text-sm font-medium text-slate-700"
           >
             Email
           </label>
@@ -75,7 +75,7 @@ export default function ContactForm() {
             id="email"
             name="email"
             required
-            className="mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 shadow-sm placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"
+            className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
             placeholder="you@example.com"
           />
         </div>
@@ -84,7 +84,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="message"
-          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          className="block text-sm font-medium text-slate-700"
         >
           Message
         </label>
@@ -93,19 +93,19 @@ export default function ContactForm() {
           name="message"
           rows={5}
           required
-          className="mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 shadow-sm placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"
+          className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
           placeholder="How can we help?"
         />
       </div>
 
       {state.status === "success" && (
-        <p className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-900/20 dark:text-green-400">
+        <p className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
           {state.message}
         </p>
       )}
 
       {state.status === "error" && (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">
+        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
           {state.message}
         </p>
       )}

@@ -1,26 +1,25 @@
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/lib/site-config";
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950">
+    <footer className="border-t border-slate-200 bg-white">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
-            <h3 className="text-sm font-bold tracking-tight text-zinc-900 dark:text-white">
-              {siteConfig.name}
-            </h3>
-            <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+            <Image src="/logo.png" alt="Norfolk Cleaners" width={140} height={32} className="h-6 w-auto" />
+            <p className="mt-2 text-sm text-slate-500">
               {siteConfig.description}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Navigate
             </h4>
             <ul className="mt-3 space-y-2">
@@ -28,7 +27,7 @@ export default function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+                    className="text-sm text-slate-600 transition-colors hover:text-cyan-600"
                   >
                     {item.label}
                   </Link>
@@ -39,14 +38,14 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Legal
             </h4>
             <ul className="mt-3 space-y-2">
               <li>
                 <Link
                   href="/privacy"
-                  className="text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+                  className="text-sm text-slate-600 transition-colors hover:text-cyan-600"
                 >
                   Privacy Policy
                 </Link>
@@ -54,7 +53,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/terms"
-                  className="text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+                  className="text-sm text-slate-600 transition-colors hover:text-cyan-600"
                 >
                   Terms of Service
                 </Link>
@@ -64,7 +63,7 @@ export default function Footer() {
 
           {/* Arcscribe Attribution */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Built By
             </h4>
             <div className="mt-3">
@@ -72,25 +71,25 @@ export default function Footer() {
                 href={siteConfig.arcscribe.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium text-zinc-900 transition-colors hover:text-zinc-600 dark:text-white dark:hover:text-zinc-300"
+                className="text-sm font-medium text-slate-900 transition-colors hover:text-cyan-600"
               >
                 {siteConfig.arcscribe.name}
               </a>
-              <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
+              <p className="mt-1 text-xs text-slate-400">
                 {siteConfig.arcscribe.tagline}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-          <p className="text-center text-xs text-zinc-400 dark:text-zinc-500">
+        <div className="mt-8 border-t border-slate-200 pt-6">
+          <p className="text-center text-xs text-slate-400">
             &copy; {year} {siteConfig.name}. All rights reserved. Website by{" "}
             <a
               href={siteConfig.arcscribe.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-zinc-600 dark:hover:text-zinc-300"
+              className="underline hover:text-cyan-600"
             >
               Arcscribe
             </a>

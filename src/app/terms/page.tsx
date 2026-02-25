@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <Container className="py-20 sm:py-24">
-      <div className="prose prose-zinc max-w-2xl dark:prose-invert">
+      <div className="prose prose-slate max-w-2xl">
         <h1>Terms of Service</h1>
         <p className="lead">
           Replace this with the client&apos;s terms of service content.

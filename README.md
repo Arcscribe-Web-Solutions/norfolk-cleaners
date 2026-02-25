@@ -1,9 +1,10 @@
-# Arcscribe Client Site Boilerplate
+﻿# Norfolk Cleaners
 
-> **Internal documentation for Arcscribe developers.**
-> This is the standard starting point for every client website built by [Arcscribe Web Solutions](https://arcscribe.co.uk).
+> **A modern, web-based replacement for ServicesM8** - built by [Arcscribe Web Solutions](https://arcscribe.co.uk).
 
-**Clean. Fast. Human.**
+Norfolk Cleaners is moving away from [ServicesM8](https://www.servicesm8.com/) and needs a purpose-built website and job management platform tailored to their cleaning business. This project is that replacement: a fast, modern Next.js application backed by a **Coolify-hosted PostgreSQL** database that will grow to cover booking, job tracking, invoicing, and everything else ServicesM8 currently handles - without the per-job fees and platform lock-in.
+
+**Demo URL:** [https://demo.norfolkcleaners.arcscri.be](https://demo.norfolkcleaners.arcscri.be)
 
 ---
 
@@ -42,8 +43,8 @@
 | Framework | Next.js (App Router) | 16 |
 | Language | TypeScript | 5 |
 | Styling | Tailwind CSS | 4 |
-| Fonts | Geist Sans & Geist Mono (via `next/font/google`) | — |
-| Database | PostgreSQL via `pg` | 8 *(optional)* |
+| Fonts | Geist Sans & Geist Mono (via `next/font/google`) | - |
+| Database | PostgreSQL (Coolify) via `pg` | 8 *(optional)* |
 | Object Storage | MinIO via AWS SDK v3 | 3 *(optional)* |
 | Email | SMTP via Nodemailer | 8 *(optional)* |
 | Linting | ESLint + `eslint-config-next` | 9 |
@@ -54,24 +55,24 @@
 
 - **Node.js** 20 or later
 - **npm** (ships with Node)
-- *(Optional)* PostgreSQL, MinIO, and/or an SMTP server — only if the client project needs them
+- *(Optional)* A [Coolify](https://coolify.io)-hosted PostgreSQL instance, MinIO, and/or an SMTP server - only if the feature is needed
 
 ---
 
 ## Getting Started
 
 ```bash
-# 1 — Clone this repo (or use it as a template)
+# 1 - Clone this repo (or use it as a template)
 git clone <repo-url> client-project-name
 cd client-project-name
 
-# 2 — Install dependencies
+# 2 - Install dependencies
 npm install
 
-# 3 — Copy the example env and customise
+# 3 - Copy the example env and customise
 cp .env.example .env.local
 
-# 4 — Start the dev server
+# 4 - Start the dev server
 npm run dev
 ```
 
@@ -85,19 +86,19 @@ Open [http://localhost:3000](http://localhost:3000). The site should render with
 arcscribesiteboilerplate/
 ├── public/                     # Static assets (favicon, images, etc.)
 ├── src/
-│   ├── app/                    # Next.js App Router — pages & API routes
+│   ├── app/                    # Next.js App Router - pages & API routes
 │   │   ├── api/
-│   │   │   ├── contact/        # POST /api/contact — form handler
-│   │   │   └── health/         # GET  /api/health  — status check
+│   │   │   ├── contact/        # POST /api/contact - form handler
+│   │   │   └── health/         # GET  /api/health  - status check
 │   │   ├── about/              # /about
 │   │   ├── contact/            # /contact (uses ContactForm component)
 │   │   ├── privacy/            # /privacy (placeholder for legal copy)
 │   │   ├── services/           # /services
 │   │   ├── terms/              # /terms (placeholder for legal copy)
 │   │   ├── globals.css         # Global styles + Tailwind import
-│   │   ├── layout.tsx          # Root layout — Header, <main>, Footer
+│   │   ├── layout.tsx          # Root layout - Header, <main>, Footer
 │   │   ├── not-found.tsx       # Custom 404 page
-│   │   └── page.tsx            # Homepage — hero, services, CTA
+│   │   └── page.tsx            # Homepage - hero, services, CTA
 │   ├── components/             # Reusable UI components
 │   │   ├── Button.tsx          # Polymorphic button / link
 │   │   ├── ContactForm.tsx     # Client-side contact form
@@ -125,11 +126,11 @@ arcscribesiteboilerplate/
 
 ### Design Principles
 
-1. **Config-driven** — All site-specific strings (name, nav links, services, branding) live in `src/lib/site-config.ts`. No page component contains hard-coded client copy.
-2. **Opt-in integrations** — Database, storage, and email are disabled by default. Each is gated by an `ENABLE_*` flag in `src/lib/features.ts`. Modules throw an explicit error if accessed while disabled.
-3. **Singleton pattern** — All external clients (pg pool, Nodemailer transport, S3Client) are cached on `globalThis` to survive Next.js HMR reloads during development without leaking connections.
-4. **Zero client-side JS where possible** — Only components that need interactivity (`ContactForm`, `Header` mobile menu) are marked `"use client"`. Everything else is a Server Component by default.
-5. **Dark mode out of the box** — All components ship with Tailwind `dark:` variants that respond to the user's OS preference via `prefers-color-scheme`.
+1. **Config-driven** - All site-specific strings (name, nav links, services, branding) live in `src/lib/site-config.ts`. No page component contains hard-coded client copy.
+2. **Opt-in integrations** - Database, storage, and email are disabled by default. Each is gated by an `ENABLE_*` flag in `src/lib/features.ts`. Modules throw an explicit error if accessed while disabled.
+3. **Singleton pattern** - All external clients (pg pool, Nodemailer transport, S3Client) are cached on `globalThis` to survive Next.js HMR reloads during development without leaking connections.
+4. **Zero client-side JS where possible** - Only components that need interactivity (`ContactForm`, `Header` mobile menu) are marked `"use client"`. Everything else is a Server Component by default.
+5. **Dark mode out of the box** - All components ship with Tailwind `dark:` variants that respond to the user's OS preference via `prefers-color-scheme`.
 
 ### Request Flow (Contact Form Example)
 
@@ -149,16 +150,16 @@ Browser → ContactForm (client component)
 
 **File:** `src/lib/site-config.ts`
 
-This is the single source of truth. Every layout element and page reads from here — **never hard-code client strings elsewhere**.
+This is the single source of truth. Every layout element and page reads from here - **never hard-code client strings elsewhere**.
 
 | Property | Purpose |
 | --- | --- |
-| `name` | Site / business name (also used in `<title>`) — defaults to `NEXT_PUBLIC_SITE_NAME` env var |
-| `url` | Canonical production URL — defaults to `NEXT_PUBLIC_SITE_URL` env var |
+| `name` | Site / business name (also used in `<title>`) - defaults to `NEXT_PUBLIC_SITE_NAME` env var |
+| `url` | Canonical production URL - defaults to `NEXT_PUBLIC_SITE_URL` env var |
 | `description` | One-liner for meta tags and the footer |
 | `locale` | HTML `lang` attribute and Open Graph locale (default: `en-GB`) |
-| `nav` | Array of `{ label, href }` — drives both the Header and Footer navigation |
-| `services` | Array of `{ title, description, icon }` — rendered as ServiceCards on the homepage |
+| `nav` | Array of `{ label, href }` - drives both the Header and Footer navigation |
+| `services` | Array of `{ title, description, icon }` - rendered as ServiceCards on the homepage |
 | `arcscribe` | Arcscribe attribution block shown in the footer |
 
 ### Updating for a New Client
@@ -175,7 +176,7 @@ export const siteConfig = {
     { label: "About", href: "/about" },
     { label: "Services", href: "/services" },
     { label: "Contact", href: "/contact" },
-    // Add or remove entries as needed — the Header and Footer update automatically
+    // Add or remove entries as needed - the Header and Footer update automatically
   ],
   services: [
     { title: "Custom Widgets", description: "Bespoke widgets for any use case.", icon: "⚙️" },
@@ -198,13 +199,13 @@ Polymorphic component that renders as a `<Link>`, `<a>`, or `<button>` depending
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | — | Button label / content |
-| `href` | `string?` | — | If provided, renders as a link |
+| `children` | `ReactNode` | - | Button label / content |
+| `href` | `string?` | - | If provided, renders as a link |
 | `variant` | `"primary" \| "secondary" \| "outline"` | `"primary"` | Visual style |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Padding / font size |
 | `external` | `boolean` | `false` | Opens in new tab (`target="_blank"`) |
 | `className` | `string` | `""` | Additional Tailwind classes |
-| `onClick` | `() => void` | — | Click handler (button mode only) |
+| `onClick` | `() => void` | - | Click handler (button mode only) |
 
 ```tsx
 <Button href="/contact" variant="primary" size="lg">Get in Touch</Button>
@@ -218,7 +219,7 @@ Max-width wrapper (`max-w-6xl`) with responsive horizontal padding.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | — | Content |
+| `children` | `ReactNode` | - | Content |
 | `as` | `"div" \| "section" \| "article" \| "main"` | `"div"` | HTML element |
 | `className` | `string` | `""` | Additional classes |
 
@@ -232,7 +233,7 @@ Max-width wrapper (`max-w-6xl`) with responsive horizontal padding.
 
 Client component (`"use client"`) that renders a name / email / message form. Submits to `POST /api/contact` via `fetch`. Manages its own `idle → submitting → success | error` state.
 
-No props — drop it into any page:
+No props - drop it into any page:
 
 ```tsx
 <ContactForm />
@@ -262,12 +263,12 @@ All pages use the Next.js App Router convention (`src/app/<route>/page.tsx`).
 
 | Route | File | Description |
 | --- | --- | --- |
-| `/` | `src/app/page.tsx` | Homepage — hero section, service cards grid, CTA |
-| `/about` | `src/app/about/page.tsx` | About page — customise per client |
-| `/services` | `src/app/services/page.tsx` | Services page — customise per client |
-| `/contact` | `src/app/contact/page.tsx` | Contact page — renders `<ContactForm />` |
-| `/privacy` | `src/app/privacy/page.tsx` | Privacy policy — placeholder, fill per client |
-| `/terms` | `src/app/terms/page.tsx` | Terms of service — placeholder, fill per client |
+| `/` | `src/app/page.tsx` | Homepage - hero section, service cards grid, CTA |
+| `/about` | `src/app/about/page.tsx` | About page - customise per client |
+| `/services` | `src/app/services/page.tsx` | Services page - customise per client |
+| `/contact` | `src/app/contact/page.tsx` | Contact page - renders `<ContactForm />` |
+| `/privacy` | `src/app/privacy/page.tsx` | Privacy policy - placeholder, fill per client |
+| `/terms` | `src/app/terms/page.tsx` | Terms of service - placeholder, fill per client |
 | `/*` (404) | `src/app/not-found.tsx` | Custom 404 with "Go Home" button |
 
 ---
@@ -287,7 +288,7 @@ Handles contact form submissions.
 **Behaviour:**
 - Validates that `name`, `email`, and `message` are present (returns `400` otherwise)
 - If `ENABLE_SMTP=true` → sends an email via `sendMail()` to `SMTP_FROM_EMAIL`
-- If `ENABLE_DATABASE=true` → template for inserting into a `contact_submissions` table (commented out — uncomment and adjust when the schema is ready)
+- If `ENABLE_DATABASE=true` → template for inserting into a `contact_submissions` table (commented out - uncomment and adjust when the schema is ready)
 - Always logs to `console.log()` as a fallback
 - Returns `{ "success": true }` on success, `{ "error": "..." }` on failure
 
@@ -320,18 +321,13 @@ If you import a disabled module and call its functions, it will throw a descript
 [Arcscribe] Feature "database" is disabled. Set ENABLE_DATABASE=true in your .env.local to enable it.
 ```
 
-### PostgreSQL (`src/lib/db.ts`)
+### PostgreSQL via Coolify (`src/lib/db.ts`)
 
-Provides a singleton connection pool via the `pg` library.
+Provides a singleton connection pool via the `pg` library, connecting to a Coolify-hosted PostgreSQL instance using a `DATABASE_URL` connection string.
 
 ```env
 ENABLE_DATABASE=true
-DATABASE_HOST=localhost
-DATABASE_PORT=5432
-DATABASE_NAME=clientdb
-DATABASE_USER=postgres
-DATABASE_PASSWORD=secret
-DATABASE_SSL=false
+DATABASE_URL=postgresql://postgres:<password>@<coolify-host>:5432/norfolk_cleaners
 ```
 
 **Exports:**
@@ -395,7 +391,7 @@ SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_USER=user@example.com
 SMTP_PASSWORD=secret
-SMTP_FROM_NAME="Client Name"
+SMTP_FROM_NAME="Norfolk Cleaners"
 SMTP_FROM_EMAIL=noreply@example.com
 ```
 
@@ -424,23 +420,18 @@ await sendMail({
 
 ## Environment Variables
 
-Complete reference — copy from `.env.example` to `.env.local`.
+Complete reference - copy from `.env.example` to `.env.local`.
 
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
-| `NEXT_PUBLIC_SITE_NAME` | Recommended | `"Client Site"` | Site / business name (visible in browser) |
+| `NEXT_PUBLIC_SITE_NAME` | Recommended | `"Norfolk Cleaners"` | Site / business name (visible in browser) |
 | `NEXT_PUBLIC_SITE_URL` | Recommended | `"http://localhost:3000"` | Canonical production URL |
 | **Feature Toggles** | | | |
-| `ENABLE_DATABASE` | No | `"false"` | Enable PostgreSQL |
+| `ENABLE_DATABASE` | No | `"false"` | Enable PostgreSQL (Coolify) |
 | `ENABLE_STORAGE` | No | `"false"` | Enable MinIO |
 | `ENABLE_SMTP` | No | `"false"` | Enable SMTP email |
-| **PostgreSQL** | | | |
-| `DATABASE_HOST` | If DB enabled | `"localhost"` | Database hostname |
-| `DATABASE_PORT` | If DB enabled | `5432` | Database port |
-| `DATABASE_NAME` | If DB enabled | `"clientdb"` | Database name |
-| `DATABASE_USER` | If DB enabled | `"postgres"` | Database user |
-| `DATABASE_PASSWORD` | If DB enabled | `""` | Database password |
-| `DATABASE_SSL` | If DB enabled | `"false"` | Use SSL connection |
+| **PostgreSQL (Coolify)** | | | |
+| `DATABASE_URL` | If DB enabled | - | Full PostgreSQL connection string from Coolify |
 | **MinIO** | | | |
 | `MINIO_ENDPOINT` | If storage enabled | `"http://localhost:9000"` | MinIO server URL |
 | `MINIO_ACCESS_KEY` | If storage enabled | `"minioadmin"` | Access key |
@@ -463,7 +454,7 @@ Complete reference — copy from `.env.example` to `.env.local`.
 
 - **Tailwind CSS 4** is imported via `@import "tailwindcss"` in `src/app/globals.css`.
 - CSS custom properties `--background` and `--foreground` are defined in `:root` and overridden in a `prefers-color-scheme: dark` media query.
-- All components use Tailwind's `dark:` variant for dark mode styling — **no toggle is needed**. It follows the user's operating system preference automatically.
+- All components use Tailwind's `dark:` variant for dark mode styling - **no toggle is needed**. It follows the user's operating system preference automatically.
 - Fonts: **Geist Sans** (body) and **Geist Mono** (code) are loaded via `next/font/google` in `layout.tsx` and exposed as CSS custom properties `--font-geist-sans` and `--font-geist-mono`.
 - The design uses a **zinc colour palette** throughout for a clean, neutral aesthetic.
 
@@ -486,9 +477,9 @@ Then use with `bg-brand`, `text-brand-dark`, etc.
 
 Metadata is configured in `src/app/layout.tsx` via the Next.js `Metadata` export:
 
-- **Title template:** `"%s | Client Name"` — each page can set its own title segment.
+- **Title template:** `"%s | Client Name"` - each page can set its own title segment.
 - **Description:** Pulled from `siteConfig.description`.
-- **metadataBase:** Set to `siteConfig.url` — required for correct Open Graph URLs.
+- **metadataBase:** Set to `siteConfig.url` - required for correct Open Graph URLs.
 - **Open Graph:** Type, locale, and site name are pre-configured.
 
 To set page-specific metadata:
@@ -625,7 +616,7 @@ Use this checklist when creating a new client site from this boilerplate:
 - [ ] Run `npm install`
 - [ ] Copy `.env.example` → `.env.local`
 - [ ] Set `NEXT_PUBLIC_SITE_NAME` and `NEXT_PUBLIC_SITE_URL`
-- [ ] Edit `src/lib/site-config.ts` — update `description`, `nav`, and `services`
+- [ ] Edit `src/lib/site-config.ts` - update `description`, `nav`, and `services`
 - [ ] Replace `public/favicon.ico` with the client's favicon
 - [ ] Customise page content in `src/app/*/page.tsx` (especially homepage hero copy)
 - [ ] Enable required integrations in `.env.local` (`ENABLE_DATABASE`, `ENABLE_STORAGE`, `ENABLE_SMTP`)
@@ -679,14 +670,14 @@ Add a `Dockerfile` following the [Next.js Docker example](https://github.com/ver
 
 These are the standards we follow across all Arcscribe client projects:
 
-1. **TypeScript everywhere** — No `.js` files. All components and utilities are strictly typed.
-2. **Server Components by default** — Only add `"use client"` when a component needs browser APIs, state, or event handlers.
-3. **Config-driven copy** — Client-specific text lives in `site-config.ts`, not scattered across components.
-4. **Feature toggles** — Never import an optional integration directly. Always check `features.*` or use `requireFeature()`.
-5. **Path aliases** — Use `@/` to import from `src/` (configured in `tsconfig.json`).
-6. **Tailwind only** — No CSS modules or styled-components. Use Tailwind utility classes with `dark:` variants.
-7. **Semantic HTML** — Use appropriate semantic elements (`<section>`, `<article>`, `<nav>`, `<main>`, etc.).
-8. **No hard-coded colours** — Stick to the zinc palette for consistency. Add brand colours via `@theme inline` in `globals.css`.
+1. **TypeScript everywhere** - No `.js` files. All components and utilities are strictly typed.
+2. **Server Components by default** - Only add `"use client"` when a component needs browser APIs, state, or event handlers.
+3. **Config-driven copy** - Client-specific text lives in `site-config.ts`, not scattered across components.
+4. **Feature toggles** - Never import an optional integration directly. Always check `features.*` or use `requireFeature()`.
+5. **Path aliases** - Use `@/` to import from `src/` (configured in `tsconfig.json`).
+6. **Tailwind only** - No CSS modules or styled-components. Use Tailwind utility classes with `dark:` variants.
+7. **Semantic HTML** - Use appropriate semantic elements (`<section>`, `<article>`, `<nav>`, `<main>`, etc.).
+8. **No hard-coded colours** - Stick to the zinc palette for consistency. Add brand colours via `@theme inline` in `globals.css`.
 
 ---
 
@@ -698,7 +689,7 @@ You're calling a function from `db.ts`, `mail.ts`, or `storage.ts` without enabl
 
 ### Hot reload creates multiple database connections
 
-This shouldn't happen — the pool is cached on `globalThis`. If you see connection issues during development, restart the dev server (`Ctrl+C` → `npm run dev`).
+This shouldn't happen - the pool is cached on `globalThis`. If you see connection issues during development, restart the dev server (`Ctrl+C` → `npm run dev`).
 
 ### Contact form returns 400
 
@@ -720,4 +711,4 @@ Call `ensureBucket()` once before uploading. You can add this to a startup scrip
 
 ## License
 
-Private — built and managed by [Arcscribe Web Solutions](https://arcscribe.co.uk).
+Private - built and managed by [Arcscribe Web Solutions](https://arcscribe.co.uk) for Norfolk Cleaners.

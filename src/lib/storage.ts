@@ -1,12 +1,12 @@
-/**
+﻿/**
  * MinIO Object Storage Client
  * ---------------------------
- * Optional — disabled by default. Set ENABLE_STORAGE=true to activate.
+ * Optional - disabled by default. Set ENABLE_STORAGE=true to activate.
  *
  * Purpose-built for MinIO. Uses the AWS SDK v3 S3 client under the hood
  * (MinIO is S3-compatible) but all configuration is MinIO-first:
  *   - Path-style access is always enabled (required by MinIO)
- *   - No AWS region concept — uses a dummy region internally
+ *   - No AWS region concept - uses a dummy region internally
  *   - Bucket auto-creation via `ensureBucket()`
  */
 
@@ -35,7 +35,7 @@ function createMinioClient(): S3Client {
 
   return new S3Client({
     endpoint: process.env.MINIO_ENDPOINT ?? "http://localhost:9000",
-    // MinIO ignores region — a dummy value satisfies the SDK requirement
+    // MinIO ignores region - a dummy value satisfies the SDK requirement
     region: "us-east-1",
     credentials: {
       accessKeyId: process.env.MINIO_ACCESS_KEY ?? "minioadmin",

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <Container className="py-20 sm:py-24">
-      <div className="prose prose-zinc max-w-2xl dark:prose-invert">
+      <div className="prose prose-slate max-w-2xl">
         <h1>Privacy Policy</h1>
         <p className="lead">
           Replace this with the client&apos;s privacy policy content.

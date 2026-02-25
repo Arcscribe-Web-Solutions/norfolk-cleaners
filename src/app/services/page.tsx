@@ -10,10 +10,10 @@ export default function ServicesPage() {
   return (
     <Container className="py-20 sm:py-24">
       <div className="max-w-2xl">
-        <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
+        <h1 className="text-4xl font-bold tracking-tight text-slate-900">
           Our Services
         </h1>
-        <p className="mt-6 text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+        <p className="mt-6 text-lg leading-8 text-slate-600">
           Replace this page with the client&apos;s service offerings. Use cards,
           grids, or detailed sections as appropriate.
         </p>

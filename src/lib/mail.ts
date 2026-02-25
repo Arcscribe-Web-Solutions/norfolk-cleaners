@@ -1,7 +1,7 @@
-/**
+﻿/**
  * SMTP Email Client
  * -----------------
- * Optional — disabled by default. Set ENABLE_SMTP=true to activate.
+ * Optional - disabled by default. Set ENABLE_SMTP=true to activate.
  *
  * Uses Nodemailer for sending transactional emails (contact forms,
  * notifications, password resets, etc.).
