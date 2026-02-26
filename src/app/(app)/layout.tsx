@@ -1,5 +1,4 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import AppNav from "@/components/AppNav";
 import { AuthProviderWrapper } from "./AuthProviderWrapper";
 
 export default function AppLayout({
@@ -13,9 +12,13 @@ export default function AppLayout({
 
   return (
     <AuthProviderWrapper isDev={isDev}>
-      <Header />
-      <main className="min-h-[calc(100vh-8rem)]">{children}</main>
-      <Footer />
+      <div
+        className="h-screen w-screen overflow-hidden flex flex-col text-gray-800 bg-gray-100"
+        style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
+      >
+        <AppNav />
+        <main className="flex-1 overflow-hidden">{children}</main>
+      </div>
     </AuthProviderWrapper>
   );
 }

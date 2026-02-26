@@ -36,7 +36,7 @@ export function DemoDataProvider({
   isDev: boolean;
   children: ReactNode;
 }) {
-  const [showDemoData, setShowDemoData] = useState(false);
+  const [showDemoData, setShowDemoData] = useState(true);
 
   return (
     <DemoDataContext.Provider

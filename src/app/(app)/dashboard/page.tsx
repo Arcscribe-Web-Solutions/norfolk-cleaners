@@ -1,13 +1,12 @@
 ﻿"use client";
 
 /**
- * Dashboard Page - Norfolk Cleaners
- * ──────────────────────────────────
- * Dense, legacy-style UI. Full viewport, tight borders, no whitespace.
- * Role-aware layout that adapts visible sections based on permissions.
+ * Dashboard – Norfolk Cleaners
+ * ─────────────────────────────
+ * Dense enterprise-style dashboard. Blue accent.
+ * Role-aware layout adapts visible sections based on permissions.
  */
 
-import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/lib/auth";
 import RoleGate from "@/components/RoleGate";
 import TodaySchedule from "@/components/dashboard/TodaySchedule";
@@ -21,21 +20,20 @@ export default function DashboardPage() {
   const { user, loading, can, roleDef } = useAuth();
   const { showDemoData } = useDemoData();
 
-  // While auth is loading, show minimal skeleton
   if (loading || !user || !roleDef) {
     return (
-      <div className="h-screen flex items-center justify-center text-xs text-gray-400 bg-white">
+      <div className="h-full flex items-center justify-center text-[11px] text-gray-400 bg-white">
         Loading dashboard…
       </div>
     );
   }
 
   return (
-    <section className="h-screen flex flex-col text-xs bg-white overflow-hidden">
-      {/* Dev banner - compact */}
+    <div className="flex flex-col overflow-hidden h-full text-xs bg-white">
+      {/* Dev banner */}
       <DemoDataBanner />
 
-      {/* Thin status bar */}
+      {/* Status bar */}
       <div className="flex items-center justify-between border-b border-gray-300 px-2 py-0.5 bg-gray-100 shrink-0">
         <span className="font-bold text-gray-700 text-[11px] uppercase tracking-wide">
           Dashboard
@@ -91,7 +89,7 @@ export default function DashboardPage() {
                   ] as const
                 ).map(([label, allowed]) => (
                   <li key={label} className="flex items-center gap-1 text-[10px]">
-                    <span className={allowed ? "text-green-600" : "text-gray-400"}>
+                    <span className={allowed ? "text-blue-600" : "text-gray-400"}>
                       {allowed ? "✓" : "–"}
                     </span>
                     <span className={allowed ? "text-gray-700" : "text-gray-400"}>
@@ -104,6 +102,6 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

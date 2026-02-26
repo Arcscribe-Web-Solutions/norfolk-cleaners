@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
       </div>
 
       {/* Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 sm:p-10 shadow-sm">
+      <div className="rounded-sm border border-gray-300 bg-white p-6 sm:p-8 shadow-sm">
         {status === "sent" ? (
           /* Success state */
           <div className="text-center">
@@ -65,13 +65,13 @@ export default function ForgotPasswordPage() {
             <div className="mt-6 space-y-3">
               <button
                 onClick={() => { setStatus("idle"); setEmail(""); }}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-cyan-700"
+                className="flex w-full items-center justify-center gap-2 rounded-sm bg-[#2563eb] px-4 py-2 text-[12px] font-bold text-white shadow-sm transition-colors hover:bg-blue-700"
               >
                 Try another email
               </button>
               <Link
                 href="/"
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                className="flex w-full items-center justify-center gap-2 rounded-sm border border-gray-300 px-4 py-2 text-[12px] font-semibold text-gray-700 transition-colors hover:bg-gray-50"
               >
                 <BsArrowLeft className="h-4 w-4" />
                 Back to sign in
@@ -82,17 +82,17 @@ export default function ForgotPasswordPage() {
           /* Form state */
           <>
             <div className="mb-8">
-              <h1 className="text-xl font-semibold text-slate-900 text-center">
+              <h1 className="text-sm font-bold text-gray-800 text-center uppercase tracking-wide">
                 Reset your password
               </h1>
-              <p className="text-sm text-slate-500 text-center mt-1.5">
-                Enter your email and we&apos;ll send you a link to reset your password.
+              <p className="text-[11px] text-gray-500 text-center mt-1">
+                Enter your email and we&apos;ll send you a reset link.
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label htmlFor="email" className="block text-[11px] font-semibold text-gray-600 mb-1">
                   Email address
                 </label>
                 <input
@@ -102,13 +102,13 @@ export default function ForgotPasswordPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-sm transition-colors"
+                  className="block w-full rounded-sm border border-gray-300 px-2.5 py-1.5 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-[12px] transition-colors"
                   placeholder="you@example.com"
                 />
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3.5 py-3 text-sm text-red-700">
+                <div className="flex items-center gap-2 rounded-sm bg-red-50 border border-red-200 px-2.5 py-2 text-[12px] text-red-700">
                   <BsExclamationTriangle className="h-4 w-4 shrink-0" />
                   {error}
                 </div>
@@ -117,7 +117,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-cyan-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="flex w-full items-center justify-center gap-2 rounded-sm bg-[#2563eb] px-4 py-2 text-[12px] font-bold text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {status === "loading" ? (
                   <span className="flex items-center gap-2">
@@ -139,7 +139,7 @@ export default function ForgotPasswordPage() {
             <div className="mt-6 text-center">
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-cyan-600 transition-colors"
+                className="inline-flex items-center gap-1.5 text-[12px] font-medium text-gray-500 hover:text-blue-600 transition-colors"
               >
                 <BsArrowLeft className="h-3.5 w-3.5" />
                 Back to sign in
@@ -149,7 +149,7 @@ export default function ForgotPasswordPage() {
         )}
       </div>
 
-      <p className="mt-8 text-center text-xs text-slate-400">
+      <p className="mt-6 text-center text-[10px] text-gray-400">
         &copy; {new Date().getFullYear()} Norfolk Cleaners. All rights reserved.
       </p>
     </div>

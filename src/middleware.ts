@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE, verifyToken } from "@/lib/jwt";
 
 /** Routes that require authentication. */
-const PROTECTED_PATHS = ["/dashboard", "/jobs", "/customers", "/settings"];
+const PROTECTED_PATHS = ["/dashboard", "/jobs", "/customers", "/settings", "/schedule"];
 
 /** Routes that authenticated users should not see (redirect to dashboard). */
 const AUTH_PATHS = ["/", "/forgot-password"];
@@ -51,5 +51,6 @@ export const config = {
     "/jobs/:path*",
     "/customers/:path*",
     "/settings/:path*",
+    "/schedule/:path*",
   ],
 };
