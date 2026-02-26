@@ -93,40 +93,30 @@ export default function RecentActivity() {
       );
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-      <div className="border-b border-slate-100 px-5 py-4">
-        <h2 className="text-sm font-semibold text-slate-900">
+    <div className="bg-white">
+      <div className="border-b border-gray-300 px-2 py-1 bg-gray-50">
+        <h2 className="text-xs font-bold text-gray-800 uppercase tracking-wide">
           Recent Activity
         </h2>
       </div>
 
       {items.length === 0 ? (
-        <div className="px-5 py-12 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-50">
-            <BsActivity className="h-6 w-6 text-slate-300" />
-          </div>
-          <p className="mt-3 text-sm font-medium text-slate-500">
-            No recent activity.
-          </p>
-          <p className="mt-1 text-xs text-slate-400">
-            Actions and events will appear here.
-          </p>
+        <div className="px-2 py-4 text-center text-xs text-gray-400">
+          No recent activity.
         </div>
       ) : (
-        <ul className="divide-y divide-slate-100/80">
+        <ul className="divide-y divide-gray-200">
           {items.map((item) => (
-            <li key={item.id} className="flex items-start gap-3 px-5 py-3.5 transition-colors duration-200 hover:bg-slate-50/50">
-              <span
-                className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.iconBg}`}
-              >
+            <li key={item.id} className="flex items-start gap-2 px-2 py-1 hover:bg-gray-50">
+              <span className="mt-0.5 shrink-0 text-gray-400">
                 {item.icon}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm text-slate-700 leading-relaxed">{item.text}</p>
-                <p className="mt-0.5 text-[11px] text-slate-400">
+                <p className="text-[11px] text-gray-700 leading-tight">{item.text}</p>
+                <p className="text-[10px] text-gray-400">
                   {item.time}
                   {canViewAll && item.actor !== "System" && (
-                    <> · <span className="font-medium text-slate-500">{item.actor}</span></>
+                    <> · <span className="font-medium text-gray-500">{item.actor}</span></>
                   )}
                 </p>
               </div>

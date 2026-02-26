@@ -79,32 +79,27 @@ export default function QuickActions() {
   if (available.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-      <div className="border-b border-slate-100 px-5 py-4">
-        <h2 className="text-sm font-semibold text-slate-900">
+    <div className="bg-white">
+      <div className="border-b border-gray-300 px-2 py-1 bg-gray-50">
+        <h2 className="text-xs font-bold text-gray-800 uppercase tracking-wide">
           Quick Actions
         </h2>
       </div>
 
-      <ul className="divide-y divide-slate-100/80">
+      <ul className="divide-y divide-gray-200">
         {available.map((action) => (
           <li key={action.label}>
             <Link
               href={action.href}
-              className="group flex items-center gap-3 px-5 py-3 transition-all duration-200 hover:bg-cyan-50/50"
+              className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 text-xs"
             >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-500 ring-1 ring-slate-100 transition-all duration-200 group-hover:bg-cyan-100 group-hover:text-cyan-600 group-hover:ring-cyan-200">
+              <span className="text-gray-500 shrink-0">
                 {action.icon}
               </span>
-              <div className="min-w-0 flex-1">
-                <span className="block text-sm font-medium text-slate-700 transition-colors group-hover:text-cyan-700">
-                  {action.label}
-                </span>
-                <span className="block text-[11px] text-slate-400">
-                  {action.description}
-                </span>
-              </div>
-              <BsBoxArrowUpRight className="h-3 w-3 shrink-0 text-slate-300 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-400" />
+              <span className="font-medium text-gray-700">
+                {action.label}
+              </span>
+              <BsBoxArrowUpRight className="h-2.5 w-2.5 ml-auto shrink-0 text-gray-300" />
             </Link>
           </li>
         ))}

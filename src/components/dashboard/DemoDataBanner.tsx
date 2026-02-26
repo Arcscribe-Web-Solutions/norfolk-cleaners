@@ -59,38 +59,32 @@ export default function DemoDataBanner() {
   if (!isDev) return null;
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-xl bg-gradient-to-r from-violet-600 to-violet-700 px-5 py-3 shadow-sm shadow-violet-600/15">
-      <div className="flex items-center gap-2.5 text-white">
-        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/15">
-          <BsCodeSlash className="h-3.5 w-3.5" />
-        </span>
-        <div>
-          <span className="text-sm font-semibold">
-            Development Mode
+    <div className="flex items-center justify-between gap-2 bg-violet-700 px-2 py-0.5 text-[10px] text-white shrink-0">
+      <div className="flex items-center gap-1.5">
+        <BsCodeSlash className="h-3 w-3" />
+        <span className="font-semibold uppercase tracking-wide">Dev Mode</span>
+        {showDemoData && (
+          <span className="bg-white/20 px-1.5 py-px text-[9px] uppercase tracking-wider">
+            Demo Active
           </span>
-          {showDemoData && (
-            <span className="ml-2 rounded-md bg-white/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider">
-              Demo Active
-            </span>
-          )}
-        </div>
+        )}
       </div>
 
       <button
         type="button"
         onClick={toggle}
-        className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 ${
+        className={`flex items-center gap-1 px-2 py-0.5 font-semibold ${
           showDemoData
-            ? "bg-white text-violet-700 shadow-sm hover:bg-violet-50"
+            ? "bg-white text-violet-700"
             : "bg-white/15 text-white hover:bg-white/25"
         }`}
       >
         {showDemoData ? (
-          <BsToggleOn className="h-4 w-4" />
+          <BsToggleOn className="h-3 w-3" />
         ) : (
-          <BsToggleOff className="h-4 w-4" />
+          <BsToggleOff className="h-3 w-3" />
         )}
-        {showDemoData ? "Demo On" : "Demo Off"}
+        {showDemoData ? "On" : "Off"}
       </button>
     </div>
   );
