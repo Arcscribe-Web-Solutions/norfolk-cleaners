@@ -738,25 +738,28 @@ export default function DispatchBoardPage() {
               <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Day column headers */}
                 <div className="flex border-b border-gray-300 bg-gray-50 shrink-0">
-                  <div className="flex items-center justify-center border-r border-gray-300 bg-gray-50 shrink-0" style={{ width: TIME_COL_WIDTH, height: 28 }}>
+                  <div className="flex items-center justify-center border-r border-gray-300 bg-gray-50 shrink-0" style={{ width: TIME_COL_WIDTH }}>
                     <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wide">Time</span>
                   </div>
-                  <div className="flex flex-1">
-                    {dayColumns.map((d, i) => {
-                      const isToday = isSameDay(d, new Date());
-                      const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-                      return (
-                        <div
-                          key={i}
-                          className={`flex-1 flex items-center justify-center border-r border-gray-200 py-1 ${isToday ? "bg-blue-50" : isWeekend ? "bg-gray-100/60" : ""}`}
-                          style={{ minWidth: viewMode === "week" ? 100 : 60 }}
-                        >
-                          <span className={`text-[10px] font-semibold ${isToday ? "text-blue-600" : "text-gray-500"}`}>
-                            {shortDay(d)}
-                          </span>
-                        </div>
-                      );
-                    })}
+                  <div className="flex-1 overflow-hidden" id="week-day-header-scroll">
+                    <div className="flex">
+                      {dayColumns.map((d, i) => {
+                        const isToday = isSameDay(d, new Date());
+                        const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+                        const dayColMin = Math.max(viewMode === "week" ? 100 : 60, visibleStaff.length * (viewMode === "week" ? 40 : 28));
+                        return (
+                          <div
+                            key={i}
+                            className={`flex-1 flex items-center justify-center border-r border-gray-200 py-1 ${isToday ? "bg-blue-50" : isWeekend ? "bg-gray-100/60" : ""}`}
+                            style={{ minWidth: dayColMin }}
+                          >
+                            <span className={`text-[10px] font-semibold ${isToday ? "text-blue-600" : "text-gray-500"}`}>
+                              {shortDay(d)}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
@@ -775,53 +778,69 @@ export default function DispatchBoardPage() {
                     </div>
                   </div>
 
-                  {/* Day columns */}
+                  {/* Day columns – each subdivided by staff */}
                   <div className="flex-1 overflow-auto" onScroll={(e) => {
-                    const el = document.getElementById("week-time-gutter");
-                    if (el) el.scrollTop = (e.target as HTMLElement).scrollTop;
+                    const target = e.target as HTMLElement;
+                    const gutter = document.getElementById("week-time-gutter");
+                    const hdr = document.getElementById("week-day-header-scroll");
+                    if (gutter) gutter.scrollTop = target.scrollTop;
+                    if (hdr) hdr.scrollLeft = target.scrollLeft;
                   }}>
                     <div className="flex" style={{ height: gridHeight }}>
                       {dayColumns.map((day, di) => {
                         const isToday = isSameDay(day, new Date());
                         const isWeekend = day.getDay() === 0 || day.getDay() === 6;
                         const dayJobs = visibleJobs.filter((j) => isSameDay(new Date(j.start_time), day));
+                        const dayColMin = Math.max(viewMode === "week" ? 100 : 60, visibleStaff.length * (viewMode === "week" ? 40 : 28));
                         return (
                           <div
                             key={di}
                             className={`flex-1 relative border-r border-gray-200 ${isToday ? "bg-blue-50/20" : isWeekend ? "bg-gray-50/30" : ""}`}
-                            style={{ minWidth: viewMode === "week" ? 100 : 60 }}
+                            style={{ minWidth: dayColMin }}
                           >
-                            {/* Hour gridlines */}
+                            {/* Hour gridlines – background layer spanning full day width */}
                             {HOURS.map((h) => (
-                              <div key={h} className="absolute left-0 right-0 border-b border-gray-100" style={{ top: (h - START_HOUR) * HOUR_HEIGHT }} />
+                              <div key={h} className="absolute left-0 right-0 border-b border-gray-100 z-0 pointer-events-none" style={{ top: (h - START_HOUR) * HOUR_HEIGHT }} />
                             ))}
 
-                            {/* Job blocks */}
-                            {dayJobs.map((job) => {
-                              const staff = allStaff.find((s) => s.id === job.staff_id);
-                              const c = staff ? sc(staff.color) : DEFAULT_COLOR;
-                              const startMins = toMinutes(job.start_time);
-                              const endMins = toMinutes(job.end_time);
-                              const top = minutesToPxV(startMins);
-                              const height = Math.max(minutesToPxV(endMins) - top, 20);
-                              const startStr = new Date(job.start_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+                            {/* Staff sub-columns */}
+                            <div className="flex flex-row h-full relative z-[1]">
+                              {visibleStaff.map((staff, si) => {
+                                const staffDayJobs = dayJobs.filter((j) => j.staff_id === staff.id);
+                                const c = sc(staff.color);
+                                return (
+                                  <div
+                                    key={staff.id}
+                                    className="flex-1 relative h-full"
+                                    style={{ borderRight: si < visibleStaff.length - 1 ? '1px solid #e5e7eb' : undefined }}
+                                  >
+                                    {staffDayJobs.map((job) => {
+                                      const startMins = toMinutes(job.start_time);
+                                      const endMins = toMinutes(job.end_time);
+                                      const top = minutesToPxV(startMins);
+                                      const height = Math.max(minutesToPxV(endMins) - top, 20);
+                                      const startStr = new Date(job.start_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 
-                              return (
-                                <div
-                                  key={job.id}
-                                  className={`absolute left-0.5 right-0.5 rounded-sm border-l-[3px] ${c.border} ${c.light} overflow-hidden cursor-pointer hover:shadow-md transition-shadow z-10`}
-                                  style={{ top, height }}
-                                  title={`${job.title}\n${staff?.name ?? ""}\n${job.location}`}
-                                >
-                                  <div className="px-1 py-px h-full">
-                                    <p className="text-[9px] font-bold text-gray-800 truncate">{customerName(job.title)}</p>
-                                    {viewMode === "week" && (
-                                      <p className="text-[8px] text-gray-500">{startStr}</p>
-                                    )}
+                                      return (
+                                        <div
+                                          key={job.id}
+                                          className={`absolute left-0.5 right-0.5 rounded-sm border-l-[3px] ${c.border} ${c.light} overflow-hidden cursor-pointer hover:shadow-md transition-shadow`}
+                                          style={{ top, height }}
+                                          title={`${job.title}\n${staff.name}\n${job.location}`}
+                                        >
+                                          <div className="px-1 py-px h-full">
+                                            <p className="text-[9px] font-bold text-gray-800 truncate">{customerName(job.title)}</p>
+                                            {viewMode === "week" && (
+                                              <p className="text-[8px] text-gray-500">{startStr}</p>
+                                            )}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
                                   </div>
-                                </div>
-                              );
-                            })}
+                                );
+                              })}
+                            </div>
 
                             {isToday && <NowLineH />}
                           </div>
