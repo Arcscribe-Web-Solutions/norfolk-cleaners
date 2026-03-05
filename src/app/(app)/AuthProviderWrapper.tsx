@@ -1,12 +1,11 @@
 "use client";
 
 import { AuthProvider } from "@/lib/auth";
-import { DemoDataProvider } from "@/components/dashboard/DemoDataBanner";
 import type { ReactNode } from "react";
 import { BsCodeSlash } from "react-icons/bs";
 
 /**
- * Client-side wrapper that provides the AuthProvider and DemoDataProvider
+ * Client-side wrapper that provides the AuthProvider
  * to the (app) route group.
  * Needed because the layout itself is a Server Component.
  */
@@ -19,11 +18,9 @@ export function AuthProviderWrapper({
 }) {
   return (
     <AuthProvider>
-      <DemoDataProvider isDev={isDev}>
-        {children}
-        {/* Floating dev indicator - always visible in dev mode */}
-        {isDev && <DevIndicator />}
-      </DemoDataProvider>
+      {children}
+      {/* Floating dev indicator - always visible in dev mode */}
+      {isDev && <DevIndicator />}
     </AuthProvider>
   );
 }

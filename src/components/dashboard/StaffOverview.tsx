@@ -3,11 +3,10 @@
 /**
  * StaffOverview - team status at a glance.
  * Only visible to roles with viewStaffList permission.
- * Real data from API. Demo data shown when dev toggle is active.
+ * Real data from API.
  */
 
 import { useEffect, useState } from "react";
-import { useDemoData } from "@/components/dashboard/DemoDataBanner";
 import { BsPersonFill, BsCircleFill, BsPeople } from "react-icons/bs";
 
 interface StaffMember {
@@ -18,15 +17,6 @@ interface StaffMember {
   currentJob?: string;
 }
 
-// Demo data - only shown when dev toggle is active
-const DEMO_STAFF: StaffMember[] = [
-  { id: "s1", name: "Harvey Washington", role: "Owner", status: "on_job", currentJob: "Dr. Okonkwo - Deep Clean" },
-  { id: "s2", name: "Sarah Mitchell", role: "Staff", status: "active" },
-  { id: "s3", name: "James Cole", role: "Staff", status: "active" },
-  { id: "s4", name: "Priya Patel", role: "Staff (No Pricing)", status: "off_today" },
-  { id: "s5", name: "Tom Barker", role: "Contractor", status: "on_job", currentJob: "Blyth & Sons - Commercial" },
-];
-
 const statusStyle = {
   active: { dot: "text-emerald-500", label: "Available", bg: "bg-emerald-50", text: "text-emerald-700" },
   on_job: { dot: "text-amber-500", label: "On Job", bg: "bg-amber-50", text: "text-amber-700" },
@@ -34,18 +24,14 @@ const statusStyle = {
 };
 
 export default function StaffOverview() {
-  const { showDemoData } = useDemoData();
-  const [realStaff, setRealStaff] = useState<StaffMember[]>([]);
+  const [staff, setStaff] = useState<StaffMember[]>([]);
 
   useEffect(() => {
-    if (showDemoData) return;
     // TODO: Replace with real API endpoint for staff status
-    setRealStaff([]);
-  }, [showDemoData]);
+    setStaff([]);
+  }, []);
 
-  const staff = showDemoData ? DEMO_STAFF : realStaff;
-
-  if (!showDemoData && staff.length === 0) {
+  if (staff.length === 0) {
     return (
       <div className="bg-white">
         <div className="flex items-center justify-between border-b border-gray-300 px-2 py-1 bg-gray-50">

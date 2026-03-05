@@ -4,32 +4,62 @@
  * Customers Page – Norfolk Cleaners
  * ──────────────────────────────────
  * Dense enterprise-style data table. Blue accent.
+ * Fetches data from /api/customers.
  */
 
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth";
-import { useDemoData } from "@/components/dashboard/DemoDataBanner";
-import DemoDataBanner from "@/components/dashboard/DemoDataBanner";
 
-const DEMO_CUSTOMERS = [
-  { id: "C-001", name: "Mrs. J. Chapman", phone: "01603 456789", email: "j.chapman@email.com", address: "14 Nelson Road, NR1 4BT", jobCount: 12, lastVisit: "24 Feb 2026", status: "active" as const },
-  { id: "C-002", name: "Mr. D. Williams", phone: "01603 234567", email: "d.williams@email.com", address: "8 Elm Hill, NR3 1HN", jobCount: 8, lastVisit: "22 Feb 2026", status: "active" as const },
-  { id: "C-003", name: "Mrs. S. Thompson", phone: "01603 345678", email: "s.thompson@email.com", address: "22 Riverside Walk, NR1 1FE", jobCount: 15, lastVisit: "25 Feb 2026", status: "active" as const },
-  { id: "C-004", name: "Mr. R. Baker", phone: "01603 567890", email: "r.baker@email.com", address: "5 Cathedral Close, NR1 4DH", jobCount: 3, lastVisit: "20 Feb 2026", status: "active" as const },
-  { id: "C-005", name: "Mrs. A. Patel", phone: "01603 678901", email: "a.patel@email.com", address: "31 Unthank Road, NR2 2PB", jobCount: 6, lastVisit: "18 Feb 2026", status: "inactive" as const },
-  { id: "C-006", name: "Dr. E. Okonkwo", phone: "01603 123456", email: "e.okonkwo@email.com", address: "7 Cathedral Close, NR1 1QF", jobCount: 22, lastVisit: "26 Feb 2026", status: "active" as const },
-  { id: "C-007", name: "Blyth & Sons Ltd", phone: "01603 789012", email: "office@blythsons.co.uk", address: "Unit 4, Wherry Rd, NR1 1WX", jobCount: 45, lastVisit: "25 Feb 2026", status: "active" as const },
-  { id: "C-008", name: "The Rose & Crown", phone: "01603 890123", email: "manager@roseandcrown.co.uk", address: "Crown Rd, NR2 3FG", jobCount: 18, lastVisit: "23 Feb 2026", status: "active" as const },
-  { id: "C-009", name: "Mr. & Mrs. Chen", phone: "01603 901234", email: "chen.family@email.com", address: "22 Eaton Rd, NR4 6PP", jobCount: 9, lastVisit: "21 Feb 2026", status: "active" as const },
-  { id: "C-010", name: "Ms. F. Adebayo", phone: "01603 012345", email: "f.adebayo@email.com", address: "5 Bracondale, NR1 2AT", jobCount: 4, lastVisit: "15 Feb 2026", status: "inactive" as const },
-  { id: "C-011", name: "Mr. T. Nguyen", phone: "01603 543210", email: "t.nguyen@email.com", address: "44 Unthank Rd, NR2 2PA", jobCount: 7, lastVisit: "19 Feb 2026", status: "active" as const },
-  { id: "C-012", name: "Norwich Cathedral", phone: "01603 218300", email: "facilities@cathedral.org.uk", address: "The Close, NR1 4DH", jobCount: 52, lastVisit: "26 Feb 2026", status: "active" as const },
-];
+interface Customer {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  job_count: string;
+  last_visit: string | null;
+  status: string;
+}
+
+function formatDate(iso: string | null): string {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
 
 export default function CustomersPage() {
   const { user, loading } = useAuth();
-  const { showDemoData } = useDemoData();
 
-  const customers = showDemoData ? DEMO_CUSTOMERS : [];
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [fetching, setFetching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchCustomers = useCallback(async () => {
+    setFetching(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/customers");
+      const json = await res.json();
+      if (json.success) {
+        setCustomers(json.data);
+      } else {
+        setError(json.error ?? "Failed to load customers");
+        setCustomers([]);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Network error");
+      setCustomers([]);
+    } finally {
+      setFetching(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) fetchCustomers();
+  }, [user, fetchCustomers]);
 
   if (loading || !user) {
     return (
@@ -41,15 +71,13 @@ export default function CustomersPage() {
 
   return (
     <div className="flex flex-col overflow-hidden h-full bg-white">
-      <DemoDataBanner />
-
       {/* Status bar */}
       <div className="flex items-center justify-between border-b border-gray-300 px-2 py-0.5 bg-gray-100 shrink-0">
         <span className="font-bold text-gray-700 text-[11px] uppercase tracking-wide">
           Customers
         </span>
         <span className="text-[10px] text-gray-500">
-          {customers.length} records
+          {fetching ? "Loading…" : `${customers.length} records`}
         </span>
       </div>
 
@@ -66,6 +94,13 @@ export default function CustomersPage() {
         <div className="flex-1" />
         <span className="text-[10px] text-gray-400">Filter: All</span>
       </div>
+
+      {/* Error banner */}
+      {error && (
+        <div className="px-2 py-1 bg-red-50 border-b border-red-200 text-[11px] text-red-600 shrink-0">
+          {error}
+        </div>
+      )}
 
       {/* Table */}
       <div className="flex-1 overflow-auto">
@@ -105,7 +140,7 @@ export default function CustomersPage() {
                 className="border-b border-gray-100 hover:bg-blue-50 cursor-pointer"
               >
                 <td className="px-2 py-1 text-gray-500 border-r border-gray-100">
-                  {c.id}
+                  {c.id.substring(0, 8)}
                 </td>
                 <td className="px-2 py-1 font-semibold text-gray-800 border-r border-gray-100">
                   {c.name}
@@ -120,10 +155,10 @@ export default function CustomersPage() {
                   {c.address}
                 </td>
                 <td className="px-2 py-1 text-center text-gray-600 border-r border-gray-100">
-                  {c.jobCount}
+                  {c.job_count}
                 </td>
                 <td className="px-2 py-1 text-gray-500 border-r border-gray-100">
-                  {c.lastVisit}
+                  {formatDate(c.last_visit)}
                 </td>
                 <td className="px-2 py-1 text-center">
                   <span
@@ -138,13 +173,15 @@ export default function CustomersPage() {
                 </td>
               </tr>
             ))}
-            {customers.length === 0 && (
+            {!fetching && customers.length === 0 && (
               <tr>
                 <td
                   colSpan={8}
                   className="text-center py-8 text-gray-400 text-[11px]"
                 >
-                  No customer data available. Enable demo data to preview.
+                  {error
+                    ? "Failed to load customers."
+                    : "No customers found."}
                 </td>
               </tr>
             )}

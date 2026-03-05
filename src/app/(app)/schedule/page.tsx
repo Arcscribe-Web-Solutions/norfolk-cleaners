@@ -8,7 +8,7 @@
  * Tabs with icons: Calendar, Tasks, Dispatch Map
  */
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import {
   BsPlusCircleFill,
   BsArrowRepeat,
@@ -25,10 +25,6 @@ import {
   BsListCheck,
   BsMap,
 } from "react-icons/bs";
-import DemoDataBanner, {
-  useDemoData,
-} from "@/components/dashboard/DemoDataBanner";
-import { DEMO_STAFF, DEMO_JOBS } from "@/types/schedule";
 import type { ScheduleJob, StaffMember, JobStatus } from "@/types/schedule";
 
 /* ═══════════════════════════════════════════════════════════
@@ -279,10 +275,9 @@ function NowLineH() {
    ═══════════════════════════════════════════════════════════ */
 
 export default function DispatchBoardPage() {
-  const { showDemoData } = useDemoData();
-
-  const allStaff: StaffMember[] = showDemoData ? DEMO_STAFF : [];
-  const allJobs: ScheduleJob[] = showDemoData ? DEMO_JOBS : [];
+  const [allStaff, setAllStaff] = useState<StaffMember[]>([]);
+  const [allJobs, setAllJobs] = useState<ScheduleJob[]>([]);
+  const [fetching, setFetching] = useState(false);
 
   const [selectedDate, setSelectedDate] = useState(() => new Date());
   const [selectedStaffIds, setSelectedStaffIds] = useState<Set<string>>(new Set());
@@ -291,15 +286,32 @@ export default function DispatchBoardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  /* auto-scroll to current time on mount */
-  useEffect(() => {
-    if (viewMode === "day" && scrollRef.current) {
-      const now = new Date();
-      const mins = now.getHours() * 60 + now.getMinutes();
-      const target = minutesToPxH(Math.max(mins - 60, START_HOUR * 60));
-      scrollRef.current.scrollLeft = target;
+  /* ── fetch schedule data from API ──────────────────────── */
+  const fetchSchedule = useCallback(async () => {
+    setFetching(true);
+    try {
+      const dateStr = selectedDate.toISOString().split("T")[0];
+      const url = `/api/schedule?date=${dateStr}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json.success) {
+        setAllStaff(json.staff ?? []);
+        setAllJobs(json.jobs ?? []);
+      } else {
+        setAllStaff([]);
+        setAllJobs([]);
+      }
+    } catch {
+      setAllStaff([]);
+      setAllJobs([]);
+    } finally {
+      setFetching(false);
     }
-  }, [viewMode]);
+  }, [selectedDate]);
+
+  useEffect(() => {
+    fetchSchedule();
+  }, [fetchSchedule]);
 
   /* ── derived ───────────────────────────────────────────── */
   const visibleStaff = useMemo(() => {
@@ -401,8 +413,6 @@ export default function DispatchBoardPage() {
 
   return (
     <div className="flex flex-col overflow-hidden h-full">
-      <DemoDataBanner />
-
       <div className="flex-1 flex flex-row overflow-hidden">
         {/* ── LEFT SIDEBAR ─────────────────────────────── */}
         <aside className="w-[220px] h-full bg-[#f9f9f9] border-r border-gray-300 flex flex-col shrink-0">
@@ -437,7 +447,9 @@ export default function DispatchBoardPage() {
               )}
             </div>
             {allStaff.length === 0 && (
-              <div className="px-3 py-4 text-[10px] text-gray-400 text-center">Enable demo data to see staff.</div>
+              <div className="px-3 py-4 text-[10px] text-gray-400 text-center">
+                {fetching ? "Loading…" : "No staff found."}
+              </div>
             )}
             {allStaff.map((s) => {
               const isSelected = selectedStaffIds.size === 0 || selectedStaffIds.has(s.id);
@@ -496,13 +508,11 @@ export default function DispatchBoardPage() {
               ))}
             </div>
 
-            {showDemoData && (
-              <div className="flex items-center gap-3 text-[10px]">
-                <span className="text-gray-500"><BsCheckCircleFill className="inline w-2.5 h-2.5 text-emerald-500 mr-0.5" />{stats.completed} done</span>
-                <span className="text-gray-500"><BsCircleFill className="inline w-2.5 h-2.5 text-amber-500 mr-0.5" />{stats.inProgress} active</span>
-                <span className="text-gray-500"><BsCircleFill className="inline w-2.5 h-2.5 text-blue-500 mr-0.5" />{stats.upcoming} upcoming</span>
-              </div>
-            )}
+            <div className="flex items-center gap-3 text-[10px]">
+              <span className="text-gray-500"><BsCheckCircleFill className="inline w-2.5 h-2.5 text-emerald-500 mr-0.5" />{stats.completed} done</span>
+              <span className="text-gray-500"><BsCircleFill className="inline w-2.5 h-2.5 text-amber-500 mr-0.5" />{stats.inProgress} active</span>
+              <span className="text-gray-500"><BsCircleFill className="inline w-2.5 h-2.5 text-blue-500 mr-0.5" />{stats.upcoming} upcoming</span>
+            </div>
           </div>
 
           {/* TAB RIBBON */}
@@ -664,7 +674,7 @@ export default function DispatchBoardPage() {
                       {/* Empty state */}
                       {visibleStaff.length === 0 && (
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <p className="text-[11px] text-gray-400">No staff data. Enable demo data toggle.</p>
+                          <p className="text-[11px] text-gray-400">{fetching ? "Loading schedule…" : "No staff data available."}</p>
                         </div>
                       )}
                     </div>
@@ -892,7 +902,7 @@ export default function DispatchBoardPage() {
           <div className="flex-1 overflow-y-auto">
             {sidebarJobs.length === 0 ? (
               <div className="px-3 py-6 text-center text-[10px] text-gray-400">
-                {showDemoData ? "No matching jobs." : "Enable demo data to see jobs."}
+                {fetching ? "Loading…" : "No matching jobs."}
               </div>
             ) : (
               sidebarJobs.map((job) => {

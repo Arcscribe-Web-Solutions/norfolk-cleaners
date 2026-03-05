@@ -4,6 +4,7 @@
  * QuickActions - contextual action buttons based on the user's permissions.
  */
 
+import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import type { RolePermissions } from "@/lib/roles";
@@ -17,6 +18,7 @@ import {
   BsBoxArrowUpRight,
 } from "react-icons/bs";
 import type { ReactNode } from "react";
+import NewJobModal from "./NewJobModal";
 
 interface QuickAction {
   label: string;
@@ -73,37 +75,62 @@ const ACTIONS: QuickAction[] = [
 
 export default function QuickActions() {
   const { can } = useAuth();
+  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
 
   const available = ACTIONS.filter((a) => can(a.permission));
 
   if (available.length === 0) return null;
 
   return (
-    <div className="bg-white">
-      <div className="border-b border-gray-300 px-2 py-1 bg-gray-50">
-        <h2 className="text-xs font-bold text-gray-800 uppercase tracking-wide">
-          Quick Actions
-        </h2>
+    <>
+      <div className="bg-white">
+        <div className="border-b border-gray-300 px-2 py-1 bg-gray-50">
+          <h2 className="text-xs font-bold text-gray-800 uppercase tracking-wide">
+            Quick Actions
+          </h2>
+        </div>
+
+        <ul className="divide-y divide-gray-200">
+          {available.map((action) =>
+            action.label === "New Job" ? (
+              <li key={action.label}>
+                <button
+                  onClick={() => setIsJobModalOpen(true)}
+                  className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 text-xs w-full text-left"
+                >
+                  <span className="text-gray-500 shrink-0">
+                    {action.icon}
+                  </span>
+                  <span className="font-medium text-gray-700">
+                    {action.label}
+                  </span>
+                  <BsBoxArrowUpRight className="h-2.5 w-2.5 ml-auto shrink-0 text-gray-300" />
+                </button>
+              </li>
+            ) : (
+              <li key={action.label}>
+                <Link
+                  href={action.href}
+                  className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 text-xs"
+                >
+                  <span className="text-gray-500 shrink-0">
+                    {action.icon}
+                  </span>
+                  <span className="font-medium text-gray-700">
+                    {action.label}
+                  </span>
+                  <BsBoxArrowUpRight className="h-2.5 w-2.5 ml-auto shrink-0 text-gray-300" />
+                </Link>
+              </li>
+            )
+          )}
+        </ul>
       </div>
 
-      <ul className="divide-y divide-gray-200">
-        {available.map((action) => (
-          <li key={action.label}>
-            <Link
-              href={action.href}
-              className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 text-xs"
-            >
-              <span className="text-gray-500 shrink-0">
-                {action.icon}
-              </span>
-              <span className="font-medium text-gray-700">
-                {action.label}
-              </span>
-              <BsBoxArrowUpRight className="h-2.5 w-2.5 ml-auto shrink-0 text-gray-300" />
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <NewJobModal
+        open={isJobModalOpen}
+        onClose={() => setIsJobModalOpen(false)}
+      />
+    </>
   );
 }

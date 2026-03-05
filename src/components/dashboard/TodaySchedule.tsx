@@ -3,12 +3,11 @@
 /**
  * TodaySchedule - vertical daily calendar grid.
  * Displays job blocks on a 7 AM – 6 PM timeline.
- * Real data is fetched from the API. Demo data shown when dev toggle is active.
+ * Real data is fetched from the API.
  */
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { useDemoData } from "@/components/dashboard/DemoDataBanner";
 
 interface ScheduleItem {
   id: string;
@@ -21,60 +20,6 @@ interface ScheduleItem {
   /** Duration in minutes (defaults applied if missing) */
   durationMin?: number;
 }
-
-// Demo data
-const DEMO_SCHEDULE: ScheduleItem[] = [
-  {
-    id: "j-001",
-    time: "08:30",
-    client: "Mrs. Patterson",
-    address: "14 Riverside Rd, NR1",
-    type: "Regular Clean",
-    assignedTo: "Harvey Washington",
-    status: "completed",
-    durationMin: 90,
-  },
-  {
-    id: "j-002",
-    time: "10:00",
-    client: "Dr. Okonkwo",
-    address: "7 Cathedral Close, NR1",
-    type: "Deep Clean",
-    assignedTo: "Harvey Washington",
-    status: "in_progress",
-    durationMin: 150,
-  },
-  {
-    id: "j-003",
-    time: "13:00",
-    client: "Blyth & Sons Ltd",
-    address: "Unit 4, Wherry Rd, NR1",
-    type: "Commercial Clean",
-    assignedTo: "Sarah Mitchell",
-    status: "upcoming",
-    durationMin: 120,
-  },
-  {
-    id: "j-004",
-    time: "15:30",
-    client: "Mr. & Mrs. Chen",
-    address: "22 Eaton Rd, NR4",
-    type: "End of Tenancy",
-    assignedTo: "James Cole",
-    status: "upcoming",
-    durationMin: 120,
-  },
-  {
-    id: "j-005",
-    time: "17:00",
-    client: "The Rose & Crown",
-    address: "Crown Rd, NR2",
-    type: "Regular Clean",
-    assignedTo: "Harvey Washington",
-    status: "upcoming",
-    durationMin: 60,
-  },
-];
 
 // ── Color palette keyed by staff member ─────────────────────
 const STAFF_COLORS: Record<string, { bg: string; border: string }> = {
@@ -108,24 +53,19 @@ function minutesToPx(minutes: number): number {
 
 export default function TodaySchedule() {
   const { can, user } = useAuth();
-  const { showDemoData } = useDemoData();
-  const [realJobs, setRealJobs] = useState<ScheduleItem[]>([]);
+  const [jobs, setJobs] = useState<ScheduleItem[]>([]);
   const [loading, setLoading] = useState(true);
   const canViewAll = can("viewAllJobs");
 
   useEffect(() => {
-    if (showDemoData) {
-      setLoading(false);
-      return;
-    }
-    setRealJobs([]);
+    // TODO: Replace with real API fetch when wired up
+    setJobs([]);
     setLoading(false);
-  }, [showDemoData]);
+  }, []);
 
-  const allJobs = showDemoData ? DEMO_SCHEDULE : realJobs;
-  const jobs = canViewAll
-    ? allJobs
-    : allJobs.filter(
+  const visibleJobs = canViewAll
+    ? jobs
+    : jobs.filter(
         (j) => j.assignedTo === `${user?.firstName} ${user?.lastName}`,
       );
 
@@ -137,7 +77,7 @@ export default function TodaySchedule() {
           Today&apos;s Schedule
         </h2>
         <span className="text-[10px] font-semibold text-gray-500">
-          {jobs.length} job{jobs.length !== 1 ? "s" : ""}
+          {visibleJobs.length} job{visibleJobs.length !== 1 ? "s" : ""}
         </span>
       </div>
 
@@ -145,7 +85,7 @@ export default function TodaySchedule() {
         <div className="flex-1 flex items-center justify-center text-xs text-gray-400">
           Loading…
         </div>
-      ) : jobs.length === 0 ? (
+      ) : visibleJobs.length === 0 ? (
         <div className="flex-1 flex items-center justify-center text-xs text-gray-400">
           No jobs scheduled for today.
         </div>
@@ -178,7 +118,7 @@ export default function TodaySchedule() {
               ))}
 
               {/* Job blocks */}
-              {jobs.map((job) => {
+              {visibleJobs.map((job) => {
                 const startMin = timeToMinutes(job.time);
                 const dur = job.durationMin ?? 90;
                 const top = minutesToPx(startMin);

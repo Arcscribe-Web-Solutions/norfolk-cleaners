@@ -2,12 +2,11 @@
 
 /**
  * RecentActivity - recent job completions / events.
- * Real data from API. Demo data shown when dev toggle is active.
+ * Real data from API.
  */
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { useDemoData } from "@/components/dashboard/DemoDataBanner";
 import {
   BsCheckCircle,
   BsFileEarmarkPlus,
@@ -27,68 +26,20 @@ interface ActivityItem {
   actor: string;
 }
 
-// Demo data - only shown when dev toggle is active
-const DEMO_ACTIVITY: ActivityItem[] = [
-  {
-    id: "a1",
-    icon: <BsCheckCircle className="h-4 w-4 text-emerald-600" />,
-    iconBg: "bg-emerald-50",
-    text: "Job #1042 completed - Mrs. Patterson, Regular Clean",
-    time: "35 min ago",
-    actor: "Harvey Washington",
-  },
-  {
-    id: "a2",
-    icon: <BsCurrencyPound className="h-4 w-4 text-cyan-600" />,
-    iconBg: "bg-cyan-50",
-    text: "Invoice #INV-298 paid - £185.00",
-    time: "1 hr ago",
-    actor: "System",
-  },
-  {
-    id: "a3",
-    icon: <BsFileEarmarkPlus className="h-4 w-4 text-blue-600" />,
-    iconBg: "bg-blue-50",
-    text: "New quote #Q-074 sent to Blyth & Sons Ltd",
-    time: "2 hr ago",
-    actor: "Sarah Mitchell",
-  },
-  {
-    id: "a4",
-    icon: <BsPersonPlus className="h-4 w-4 text-violet-600" />,
-    iconBg: "bg-violet-50",
-    text: "New customer added - The Rose & Crown",
-    time: "3 hr ago",
-    actor: "James Cole",
-  },
-  {
-    id: "a5",
-    icon: <BsClock className="h-4 w-4 text-amber-600" />,
-    iconBg: "bg-amber-50",
-    text: "Job #1039 rescheduled to tomorrow 10:00",
-    time: "4 hr ago",
-    actor: "Harvey Washington",
-  },
-];
-
 export default function RecentActivity() {
   const { can, user } = useAuth();
-  const { showDemoData } = useDemoData();
-  const [realActivity, setRealActivity] = useState<ActivityItem[]>([]);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
   const canViewAll = can("viewAllJobs");
 
   // Fetch real activity
   useEffect(() => {
-    if (showDemoData) return;
     // TODO: Replace with real API endpoint when activity log table exists
-    setRealActivity([]);
-  }, [showDemoData]);
-
-  const allItems = showDemoData ? DEMO_ACTIVITY : realActivity;
+    setActivity([]);
+  }, []);
 
   const items = canViewAll
-    ? allItems
-    : allItems.filter(
+    ? activity
+    : activity.filter(
         (a) => a.actor === `${user?.firstName} ${user?.lastName}` || a.actor === "System",
       );
 

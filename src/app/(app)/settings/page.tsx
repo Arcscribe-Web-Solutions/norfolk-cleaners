@@ -7,7 +7,6 @@
  */
 
 import { useAuth } from "@/lib/auth";
-import DemoDataBanner from "@/components/dashboard/DemoDataBanner";
 
 export default function SettingsPage() {
   const { user, loading, roleDef } = useAuth();
@@ -22,8 +21,6 @@ export default function SettingsPage() {
 
   return (
     <div className="flex flex-col overflow-hidden h-full bg-white">
-      <DemoDataBanner />
-
       {/* Status bar */}
       <div className="flex items-center justify-between border-b border-gray-300 px-2 py-0.5 bg-gray-100 shrink-0">
         <span className="font-bold text-gray-700 text-[11px] uppercase tracking-wide">

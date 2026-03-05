@@ -7,11 +7,13 @@
  * with the real logo, blue accent, and tight layout.
  */
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { BsSearch, BsBellFill, BsEnvelope, BsQuestionCircle } from "react-icons/bs";
+import NewJobModal from "./dashboard/NewJobModal";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/dashboard" },
@@ -25,8 +27,10 @@ const NAV_ITEMS = [
 export default function AppNav() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
 
   return (
+    <>
     <nav className="w-full h-14 bg-white border-b border-gray-300 flex items-center justify-between px-4 shrink-0">
       {/* Left: Logo + nav links */}
       <div className="flex items-center h-full">
@@ -65,7 +69,10 @@ export default function AppNav() {
 
       {/* Right: New Job button + icon placeholders + user */}
       <div className="flex items-center gap-3">
-        <button className="bg-[#2563eb] text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-sm cursor-pointer whitespace-nowrap">
+        <button
+          onClick={() => setIsJobModalOpen(true)}
+          className="bg-[#2563eb] text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-sm cursor-pointer whitespace-nowrap"
+        >
           New Job
         </button>
 
@@ -106,5 +113,8 @@ export default function AppNav() {
         )}
       </div>
     </nav>
+
+    <NewJobModal open={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
+    </>
   );
 }

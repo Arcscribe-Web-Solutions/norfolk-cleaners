@@ -3,11 +3,10 @@
 /**
  * FinancialOverview - revenue / invoicing at-a-glance.
  * Only visible to roles with viewJobProfitability or viewInvoices permission.
- * Real data from API. Demo data shown when dev toggle is active.
+ * Real data from API.
  */
 
 import { useEffect, useState } from "react";
-import { useDemoData } from "@/components/dashboard/DemoDataBanner";
 import {
   BsCurrencyPound,
   BsReceiptCutoff,
@@ -26,16 +25,6 @@ interface Financials {
   overdueCount: number;
 }
 
-const DEMO_FINANCIALS: Financials = {
-  revenueThisMonth: 12_480,
-  revenueLastMonth: 11_200,
-  outstandingInvoices: 3_250,
-  overdueInvoices: 875,
-  paidInvoicesCount: 42,
-  unpaidInvoicesCount: 7,
-  overdueCount: 2,
-};
-
 const EMPTY_FINANCIALS: Financials = {
   revenueThisMonth: 0,
   revenueLastMonth: 0,
@@ -47,20 +36,16 @@ const EMPTY_FINANCIALS: Financials = {
 };
 
 export default function FinancialOverview() {
-  const { showDemoData } = useDemoData();
-  const [realData, setRealData] = useState<Financials>(EMPTY_FINANCIALS);
+  const [f, setData] = useState<Financials>(EMPTY_FINANCIALS);
 
   useEffect(() => {
-    if (showDemoData) return;
     // TODO: Replace with real API endpoint when invoices table exists
-    setRealData(EMPTY_FINANCIALS);
-  }, [showDemoData]);
-
-  const f = showDemoData ? DEMO_FINANCIALS : realData;
+    setData(EMPTY_FINANCIALS);
+  }, []);
 
   const hasData = f.revenueThisMonth > 0 || f.paidInvoicesCount > 0 || f.outstandingInvoices > 0;
 
-  if (!showDemoData && !hasData) {
+  if (!hasData) {
     return (
       <div className="bg-white">
         <div className="flex items-center justify-between border-b border-gray-300 px-2 py-1 bg-gray-50">
