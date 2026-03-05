@@ -3,105 +3,147 @@
 /**
  * Dashboard – Norfolk Cleaners
  * ─────────────────────────────
- * Dense enterprise-style dashboard. Blue accent.
- * Role-aware layout adapts visible sections based on permissions.
+ * Legacy-style enterprise dashboard with action buttons,
+ * two-column workspace (feed + tasks sidebar), and floating chat button.
  */
 
-import { useAuth } from "@/lib/auth";
-import RoleGate from "@/components/RoleGate";
-import TodaySchedule from "@/components/dashboard/TodaySchedule";
-import FinancialOverview from "@/components/dashboard/FinancialOverview";
-import StaffOverview from "@/components/dashboard/StaffOverview";
-import RecentActivity from "@/components/dashboard/RecentActivity";
-import QuickActions from "@/components/dashboard/QuickActions";
-import DemoDataBanner, { useDemoData } from "@/components/dashboard/DemoDataBanner";
+import { 
+  FiCalendar, 
+  FiClock, 
+  FiUsers, 
+  FiFileText, 
+  FiMapPin, 
+  FiSettings, 
+  FiBarChart2, 
+  FiPackage,
+  FiMessageCircle,
+  FiUser
+} from "react-icons/fi";
+
+const actionButtons = [
+  { icon: FiMapPin, label: "Dispatch Board" },
+  { icon: FiClock, label: "History" },
+  { icon: FiUsers, label: "Clients" },
+  { icon: FiFileText, label: "Invoicing" },
+  { icon: FiCalendar, label: "Schedule" },
+  { icon: FiBarChart2, label: "Reports" },
+  { icon: FiPackage, label: "Inventory" },
+  { icon: FiSettings, label: "Settings" },
+];
+
+const feedItems = [
+  {
+    title: "ServiceM8 Pay Payment",
+    date: "5 Mar 2026, 09:42 AM",
+    items: [
+      { job: "#12345", amount: "£60.00" },
+      { job: "#12346", amount: "£85.00" },
+      { job: "#12347", amount: "£45.00" },
+    ],
+  },
+  {
+    title: "ServiceM8 Pay Payment",
+    date: "4 Mar 2026, 03:15 PM",
+    items: [
+      { job: "#12340", amount: "£120.00" },
+      { job: "#12341", amount: "£75.00" },
+    ],
+  },
+];
 
 export default function DashboardPage() {
-  const { user, loading, can, roleDef } = useAuth();
-  const { showDemoData } = useDemoData();
-
-  if (loading || !user || !roleDef) {
-    return (
-      <div className="h-full flex items-center justify-center text-[11px] text-gray-400 bg-white">
-        Loading dashboard…
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col overflow-hidden h-full text-xs bg-white">
-      {/* Dev banner */}
-      <DemoDataBanner />
+    <div className="min-h-full bg-gray-50">
+      {/* Main Container */}
+      <div className="max-w-5xl mx-auto pt-8 flex flex-col gap-6 px-4 pb-8">
+        
+        {/* Top Action Buttons Grid */}
+        <div className="flex flex-wrap justify-center gap-3">
+          {actionButtons.map((btn) => (
+            <button
+              key={btn.label}
+              className="w-24 h-24 bg-white border border-gray-300 rounded-sm shadow-sm flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50"
+            >
+              <btn.icon className="w-8 h-8 text-gray-600 mb-2" />
+              <span className="text-xs text-gray-700 text-center leading-tight px-1">
+                {btn.label}
+              </span>
+            </button>
+          ))}
+        </div>
 
-      {/* Status bar */}
-      <div className="flex items-center justify-between border-b border-gray-300 px-2 py-0.5 bg-gray-100 shrink-0">
-        <span className="font-bold text-gray-700 text-[11px] uppercase tracking-wide">
-          Dashboard
-        </span>
-        <span className="text-[10px] text-gray-500">
-          {user.firstName} {user.lastName} &middot; {roleDef.label}
-        </span>
-      </div>
+        {/* Two-Column Workspace */}
+        <div className="flex flex-col md:flex-row gap-6">
+          
+          {/* Left Column - Feed (65%) */}
+          <div className="flex-grow flex flex-col gap-4">
+            
+            {/* Create Post Card */}
+            <div className="border border-gray-300 rounded-sm bg-white">
+              <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
+                <span className="font-bold text-sm text-gray-800">Create Post</span>
+              </div>
+              <div className="p-3 flex items-center gap-3">
+                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center shrink-0">
+                  <FiUser className="w-5 h-5 text-gray-500" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="What's on your mind?"
+                  className="flex-1 border border-gray-300 rounded-sm px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400"
+                />
+              </div>
+            </div>
 
-      {/* Main grid */}
-      <div className="flex-1 grid grid-cols-[2fr_1fr] border-t border-gray-300 overflow-hidden">
-        {/* Left column: schedule + activity */}
-        <div className="border-r border-gray-300 flex flex-col overflow-hidden">
-          <TodaySchedule />
-          <div className="border-t border-gray-300 shrink-0 max-h-[35%] overflow-y-auto">
-            <RecentActivity />
+            {/* Feed Item Cards */}
+            {feedItems.map((item, idx) => (
+              <div key={idx} className="border border-gray-300 rounded-sm bg-white">
+                <div className="p-3">
+                  <h3 className="font-bold text-sm text-gray-800">{item.title}</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">{item.date}</p>
+                  <div className="mt-3 space-y-1">
+                    {item.items.map((payout, i) => (
+                      <p key={i} className="text-sm text-gray-700">
+                        <span className="font-medium text-green-700">{payout.amount}</span>
+                        {" "}for Job{" "}
+                        <span className="text-blue-600">{payout.job}</span>
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+
           </div>
+
+          {/* Right Column - Sidebar (35%) */}
+          <div className="w-full md:w-80 shrink-0">
+            
+            {/* My Tasks Card */}
+            <div className="border border-gray-300 rounded-sm bg-white">
+              <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
+                <span className="font-bold text-sm text-gray-800">My Tasks</span>
+              </div>
+              <div className="p-3">
+                <p className="text-sm text-gray-500">
+                  No tasks are currently assigned to you.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
-        {/* Right column: actions, financials, staff */}
-        <div className="flex flex-col overflow-y-auto">
-          <QuickActions />
-
-          <RoleGate permission="viewJobProfitability">
-            <div className="border-t border-gray-300">
-              <FinancialOverview />
-            </div>
-          </RoleGate>
-
-          <RoleGate permission="viewStaffList">
-            <div className="border-t border-gray-300">
-              <StaffOverview />
-            </div>
-          </RoleGate>
-
-          {/* Restricted role info */}
-          {!can("viewAllJobs") && (
-            <div className="border-t border-gray-300 px-2 py-1">
-              <h3 className="text-[10px] font-bold text-gray-700 uppercase">
-                Your Access
-              </h3>
-              <p className="text-[10px] text-gray-500 mt-0.5">
-                Filtered view — <strong>{roleDef.label}</strong> role.
-              </p>
-              <ul className="mt-1 space-y-0.5">
-                {(
-                  [
-                    ["View own jobs", can("viewOwnJobs")],
-                    ["View all jobs", can("viewAllJobs")],
-                    ["Create quotes", can("createQuotes")],
-                    ["Create invoices", can("createInvoices")],
-                    ["View pricing", can("viewSalePricing")],
-                  ] as const
-                ).map(([label, allowed]) => (
-                  <li key={label} className="flex items-center gap-1 text-[10px]">
-                    <span className={allowed ? "text-blue-600" : "text-gray-400"}>
-                      {allowed ? "✓" : "–"}
-                    </span>
-                    <span className={allowed ? "text-gray-700" : "text-gray-400"}>
-                      {label}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
       </div>
+
+      {/* Floating Action Button */}
+      <button
+        className="fixed bottom-6 right-6 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg flex items-center justify-center cursor-pointer transition-colors"
+        aria-label="Open chat"
+      >
+        <FiMessageCircle className="w-6 h-6 text-white" />
+      </button>
     </div>
   );
 }
