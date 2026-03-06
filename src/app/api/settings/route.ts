@@ -112,9 +112,9 @@ export async function GET(req: NextRequest) {
       if (camelKey) {
         if (row.key === "business_hours") {
           try {
-            settings[camelKey] = JSON.parse(row.value);
+            (settings as Record<string, unknown>)[camelKey] = JSON.parse(row.value);
           } catch {
-            settings[camelKey] = {} as CompanySettings["businessHours"];
+            (settings as Record<string, unknown>)[camelKey] = {};
           }
         } else {
           (settings as Record<string, string>)[camelKey] = row.value;
