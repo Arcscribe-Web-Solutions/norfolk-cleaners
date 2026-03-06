@@ -198,13 +198,13 @@ export default function JobsPage() {
   return (
     <div className="flex flex-col overflow-hidden h-full bg-white">
       {/* ── Status Bar ── */}
-      <div className="flex items-center justify-between border-b border-gray-300 px-3 py-1 bg-gray-100 shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-300 px-3 py-1.5 sm:py-1 bg-gray-100 shrink-0 gap-1 sm:gap-0">
         <span className="font-bold text-gray-700 text-[12px] uppercase tracking-wide">
           Jobs
         </span>
-        <div className="flex items-center gap-3 text-[10px] text-gray-500">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] text-gray-500">
           <span>{jobs.length} total</span>
-          <span className="text-gray-300">|</span>
+          <span className="hidden sm:inline text-gray-300">|</span>
           <span className="flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
             {stats.scheduled || 0} scheduled
@@ -217,22 +217,17 @@ export default function JobsPage() {
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             {stats.completed || 0} done
           </span>
-          <span className="text-gray-300">|</span>
-          <span className="flex items-center gap-1">
-            <BsCalendar3 className="w-2.5 h-2.5" />
-            {scheduledCount} on board
-          </span>
         </div>
       </div>
 
       {/* ── Toolbar ── */}
-      <div className="flex items-center gap-2 px-3 py-1.5 border-b border-gray-300 bg-[#fafafa] shrink-0">
+      <div className="flex flex-wrap items-center gap-2 px-3 py-1.5 border-b border-gray-300 bg-[#fafafa] shrink-0">
         {/* Search */}
-        <div className="relative">
+        <div className="relative flex-1 min-w-[150px] max-w-[280px]">
           <BsSearch className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
           <input
-            className="border border-gray-300 pl-7 pr-2 py-1 text-[11px] w-[220px] outline-none focus:border-blue-400 bg-white"
-            placeholder="Search jobs, clients, addresses…"
+            className="border border-gray-300 pl-7 pr-2 py-1 text-[11px] w-full outline-none focus:border-blue-400 bg-white"
+            placeholder="Search jobs, clients…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -260,7 +255,7 @@ export default function JobsPage() {
           onClick={() => setIsNewJobOpen(true)}
           className="bg-[#00809d] text-white px-3 py-1 text-[11px] font-bold cursor-pointer hover:bg-[#006d86]"
         >
-          + New Job
+          + New
         </button>
 
         {/* Refresh */}
@@ -270,11 +265,11 @@ export default function JobsPage() {
           className="border border-gray-300 bg-white text-gray-600 px-2 py-1 text-[11px] cursor-pointer hover:bg-gray-50 flex items-center gap-1"
         >
           <BsArrowRepeat className={`w-3 h-3 ${fetching ? "animate-spin" : ""}`} />
-          Refresh
+          <span className="hidden sm:inline">Refresh</span>
         </button>
 
-        <div className="flex-1" />
-        <span className="text-[10px] text-gray-400">
+        <div className="hidden sm:block flex-1" />
+        <span className="hidden sm:inline text-[10px] text-gray-400">
           Showing {filteredJobs.length} of {jobs.length}
         </span>
       </div>
@@ -287,8 +282,82 @@ export default function JobsPage() {
         </div>
       )}
 
-      {/* ── Table ── */}
-      <div className="flex-1 overflow-auto">
+      {/* ── Mobile Card View ── */}
+      <div className="flex-1 overflow-auto md:hidden">
+        <div className="p-3 space-y-3">
+          {filteredJobs.map((j) => {
+            const s = STATUS_STYLES[j.status] ?? DEFAULT_STATUS;
+            const p = PRIORITY_STYLES[j.priority] ?? DEFAULT_PRIORITY;
+            const isScheduled = !!j.scheduled_start;
+
+            return (
+              <div
+                key={j.id}
+                onClick={() => setEditingJob(j)}
+                className="bg-white border border-gray-200 rounded-lg p-3 cursor-pointer active:bg-gray-50 shadow-sm"
+              >
+                {/* Header row: customer + status */}
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-gray-800 text-sm truncate">{j.customer}</h3>
+                    {j.address && (
+                      <p className="text-xs text-gray-500 truncate">{j.address}</p>
+                    )}
+                  </div>
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded ${s.bg} ${s.text} shrink-0`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
+                    {s.label}
+                  </span>
+                </div>
+
+                {/* Details grid */}
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs mt-2 pt-2 border-t border-gray-100">
+                  <div>
+                    <span className="text-gray-400">Type:</span>{" "}
+                    <span className="text-gray-700">{formatJobType(j.job_type)}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Assigned:</span>{" "}
+                    <span className="text-gray-700">{j.assigned_to}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Date:</span>{" "}
+                    <span className="text-gray-700">{isScheduled ? formatDate(j.scheduled_start) : "Not set"}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Time:</span>{" "}
+                    <span className="text-gray-700">
+                      {isScheduled ? formatTime(j.scheduled_start) : "—"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Footer: amount + priority */}
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+                  <span className={`inline-block px-1.5 py-0.5 text-[10px] font-semibold rounded ${p.bg} ${p.text}`}>
+                    {p.label} Priority
+                  </span>
+                  <span className="font-semibold text-gray-800 text-sm">
+                    {formatAmount(j.amount)}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+          {!fetching && filteredJobs.length === 0 && (
+            <div className="text-center py-12 text-gray-400 text-sm">
+              {error
+                ? "Failed to load jobs."
+                : search || statusFilter !== "all"
+                  ? "No jobs match your filters."
+                  : "No jobs found. Tap + New to create one."}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Desktop Table ── */}
+      <div className="flex-1 overflow-auto hidden md:block">
         <table className="w-full text-[11px] border-collapse">
           <thead className="bg-gray-50 sticky top-0 z-10">
             <tr className="border-b border-gray-300">

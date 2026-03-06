@@ -8,7 +8,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-white">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {/* Brand */}
           <div>
             <Image src="/logo.png" alt="Norfolk Cleaners" width={140} height={32} className="h-6 w-auto" />
@@ -36,31 +36,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Legal
-            </h4>
-            <ul className="mt-3 space-y-2">
-              <li>
-                <Link
-                  href="/privacy"
-                  className="text-sm text-slate-600 transition-colors hover:text-cyan-600"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms"
-                  className="text-sm text-slate-600 transition-colors hover:text-cyan-600"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
-
           {/* Arcscribe Attribution */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -82,19 +57,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-slate-200 pt-6">
-          <p className="text-center text-xs text-slate-400">
-            &copy; {year} {siteConfig.name}. All rights reserved. Website by{" "}
-            <a
-              href={siteConfig.arcscribe.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-cyan-600"
-            >
-              Arcscribe
-            </a>
-            .
-          </p>
+        {/* Copyright */}
+        <div className="mt-10 border-t border-slate-100 pt-6 text-center text-xs text-slate-400">
+          &copy; {year} {siteConfig.name}. All rights reserved.
         </div>
       </div>
     </footer>

@@ -112,27 +112,27 @@ export default function DashboardPage() {
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
         {/* Main Container */}
-        <div className="max-w-5xl mx-auto pt-8 flex flex-col gap-6 px-4 pb-8">
+        <div className="max-w-5xl mx-auto pt-4 sm:pt-8 flex flex-col gap-4 sm:gap-6 px-3 sm:px-4 pb-8">
           
-          {/* Top Action Buttons Grid */}
-          <div className="flex flex-wrap justify-center gap-3">
+          {/* Top Action Buttons Grid - responsive sizing */}
+          <div className="grid grid-cols-4 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-3">
             {actionButtons.map((btn) => (
               <a
                 key={btn.label}
                 href={btn.href}
-                className="w-24 h-24 bg-white border border-gray-300 rounded-sm shadow-sm flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+                className="w-full sm:w-24 aspect-square sm:h-24 bg-white border border-gray-300 rounded-sm shadow-sm flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors"
               >
-                <btn.icon className="w-8 h-8 text-gray-600 mb-2" />
-                <span className="text-xs text-gray-700 text-center leading-tight px-1">
+                <btn.icon className="w-6 sm:w-8 h-6 sm:h-8 text-gray-600 mb-1 sm:mb-2" />
+                <span className="text-[10px] sm:text-xs text-gray-700 text-center leading-tight px-1">
                   {btn.label}
                 </span>
               </a>
             ))}
           </div>
 
-          {/* Stats Cards Row */}
+          {/* Stats Cards Row - responsive grid */}
           {!loading && data && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
               <StatCard label="Active Clients" value={data.stats.activeClients} />
               <StatCard label="Today's Jobs" value={data.stats.todayJobs} />
               <StatCard label="Pending Invoices" value={data.stats.pendingInvoices} />

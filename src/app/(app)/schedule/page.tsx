@@ -411,9 +411,131 @@ export default function DispatchBoardPage() {
      RENDER
      ═══════════════════════════════════════════════════════ */
 
+  // Get today's jobs for mobile list view
+  const todayJobs = useMemo(() => {
+    return allJobs.filter(job => {
+      const jobDate = new Date(job.start_time);
+      return isSameDay(jobDate, selectedDate);
+    }).sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+  }, [allJobs, selectedDate]);
+
   return (
     <div className="flex flex-col overflow-hidden h-full">
-      <div className="flex-1 flex flex-row overflow-hidden">
+      {/* ══ MOBILE VIEW ════════════════════════════════════ */}
+      <div className="md:hidden flex flex-col h-full">
+        {/* Mobile Header */}
+        <div className="bg-gray-50 border-b border-gray-300 p-3 shrink-0">
+          <div className="flex items-center justify-between mb-3">
+            <button onClick={() => navigateDate(-1)} className="p-2 hover:bg-gray-200 rounded-sm">
+              <BsChevronLeft className="w-4 h-4 text-gray-600" />
+            </button>
+            <div className="text-center">
+              <div className="text-sm font-bold text-gray-800">{dateLabel}</div>
+              <button 
+                onClick={() => setSelectedDate(new Date())} 
+                className="text-xs text-blue-600 font-medium"
+              >
+                Go to Today
+              </button>
+            </div>
+            <button onClick={() => navigateDate(1)} className="p-2 hover:bg-gray-200 rounded-sm">
+              <BsChevronRight className="w-4 h-4 text-gray-600" />
+            </button>
+          </div>
+          
+          {/* View Mode Pills */}
+          <div className="flex gap-1 bg-gray-200 rounded-sm p-1">
+            {([
+              { key: "day", label: "Day" },
+              { key: "week", label: "Week" },
+              { key: "month", label: "Month" },
+            ] as { key: ViewMode; label: string }[]).map((v) => (
+              <button
+                key={v.key}
+                onClick={() => setViewMode(v.key)}
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-sm ${
+                  viewMode === v.key ? "bg-white text-gray-800 shadow-sm" : "text-gray-500"
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Stats Row */}
+          <div className="flex justify-around mt-3 text-xs">
+            <span className="text-gray-600"><BsCheckCircleFill className="inline w-3 h-3 text-emerald-500 mr-1" />{stats.completed}</span>
+            <span className="text-gray-600"><BsCircleFill className="inline w-3 h-3 text-amber-500 mr-1" />{stats.inProgress}</span>
+            <span className="text-gray-600"><BsCircleFill className="inline w-3 h-3 text-blue-500 mr-1" />{stats.upcoming}</span>
+          </div>
+        </div>
+
+        {/* Mobile Job List */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+          {fetching ? (
+            <div className="text-center py-8 text-sm text-gray-400">Loading schedule…</div>
+          ) : todayJobs.length === 0 ? (
+            <div className="text-center py-8">
+              <BsCalendar3 className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-sm text-gray-500">No jobs scheduled for this day</p>
+            </div>
+          ) : (
+            todayJobs.map((job) => {
+              const staff = allStaff.find(s => s.id === job.staff_id);
+              const c = staff ? sc(staff.color) : DEFAULT_COLOR;
+              const startStr = new Date(job.start_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+              const endStr = new Date(job.end_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+              return (
+                <div
+                  key={job.id}
+                  className={`bg-white border border-gray-200 rounded-sm overflow-hidden ${c.border} border-l-4`}
+                >
+                  <div className="p-3">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-800 truncate">{customerName(job.title)}</p>
+                        <p className="text-xs text-gray-500">{jobType(job.title)}</p>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        job.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                        job.status === 'in_progress' ? 'bg-amber-100 text-amber-700' :
+                        job.status === 'cancelled' ? 'bg-gray-100 text-gray-500' :
+                        'bg-blue-100 text-blue-700'
+                      }`}>
+                        {STATUS_LABEL[job.status]}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <BsClock className="w-3 h-3" />
+                        {startStr} – {endStr}
+                      </span>
+                      {staff && (
+                        <span className="flex items-center gap-1">
+                          <span className={`w-2 h-2 rounded-full ${c.bg}`} />
+                          {staff.name.split(' ')[0]}
+                        </span>
+                      )}
+                    </div>
+
+                    {job.location && (
+                      <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+                        <BsGeoAlt className="w-3 h-3 shrink-0" />
+                        <span className="truncate">{job.location}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      {/* ══ DESKTOP VIEW ═══════════════════════════════════ */}
+      <div className="hidden md:flex flex-1 flex-row overflow-hidden">
         {/* ── LEFT SIDEBAR ─────────────────────────────── */}
         <aside className="w-[220px] h-full bg-[#f9f9f9] border-r border-gray-300 flex flex-col shrink-0">
           <div className="flex items-center gap-4 px-3 h-8 border-b border-gray-300 shrink-0">
@@ -910,6 +1032,7 @@ export default function DispatchBoardPage() {
                 const c = staff ? sc(staff.color) : DEFAULT_COLOR;
                 const startStr = new Date(job.start_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
                 const endStr = new Date(job.end_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
                 return (
                   <div key={job.id} className="flex items-stretch px-2 py-1.5 border-b border-gray-100 cursor-pointer hover:bg-blue-50">
                     <div className={`w-[3px] rounded-full shrink-0 mr-2 ${c.bg}`} />
